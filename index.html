@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AulIA - Plataforma de Simulaciones</title>
+    <style>
+        :root {
+            --primary: #006A6A;
+            --bg-color: #FFFFFF; /* Fondo blanco pedido */
+            --card-bg: #F8F9FA;
+            --text-main: #212529;
+            --radius: 12px;
+            --font-family: 'Segoe UI', sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: var(--font-family); background-color: var(--bg-color); color: var(--text-main); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+        header { padding: 40px 20px; text-align: center; }
+        
+        /* Contenedor del logo */
+        .logo-container {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .logo-img {
+            max-width: 300px; /* Tamaño del logo */
+            height: auto;
+        }
+
+        .hero-desc { max-width: 700px; margin: 20px auto; font-size: 1.1rem; color: #555; }
+
+        /* Tarjetas y Grid */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; padding: 20px 0; }
+        .card { 
+            background: var(--card-bg); 
+            padding: 30px; 
+            border-radius: var(--radius); 
+            border: 1px solid #eee;
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        
+        .btn { 
+            background: var(--primary); 
+            color: white; 
+            padding: 12px; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-weight: 600;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .hidden { display: none; }
+        .breadcrumbs { margin: 20px 0; color: var(--primary); cursor: pointer; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <div class="logo-container">
+                <img src="logo.png" alt="Logo AulIA" class="logo-img" onerror="alert('Error: No se encuentra el archivo logo.png en esta carpeta')">
+            </div>
+            <p class="hero-desc">
+                Plataforma de simulaciones educativas basada en IA generativa. Practica la toma de decisiones y la reflexión docente en entornos profesionales seguros.
+            </p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="breadcrumbs" class="breadcrumbs hidden" onclick="app.goHome()"> Inicio > Volver </div>
+        
+        <section id="view-home">
+            <div class="grid" id="degrees-grid"></div>
+        </section>
+
+        <section id="view-subjects" class="hidden">
+            <h2 id="degree-title" style="margin-bottom:20px; color:var(--primary)"></h2>
+            <div class="grid" id="subjects-grid"></div>
+        </section>
+
+        <section id="view-levels" class="hidden">
+            <h2 id="subject-title" style="margin-bottom:20px; color:var(--primary)"></h2>
+            <div class="grid">
+                <div class="card"><h3>Nivel 1 (Fácil)</h3><button class="btn" onclick="app.loadSimulations(1)">Acceder</button></div>
+                <div class="card"><h3>Nivel 2 (Intermedio)</h3><button class="btn" onclick="app.loadSimulations(2)">Acceder</button></div>
+                <div class="card"><h3>Nivel 3 (Difícil)</h3><button class="btn" onclick="app.loadSimulations(3)">Acceder</button></div>
+            </div>
+        </section>
+
+        <section id="view-simulations" class="hidden">
+            <h2 id="level-title" style="margin-bottom:20px; color:var(--primary)"></h2>
+            <div id="simulations-grid" style="display:grid; grid-template-columns: repeat(5, 1fr); gap:10px;"></div>
+        </section>
+    </div>
+
+    <script>
+        const data = {
+            degrees: [
+                { id: '1', title: 'Máster Formación del Profesorado', subjects: [{code:'01MSEC', name:'Aprendizaje'}, {code:'03MSEC', name:'Sociedad'}] },
+                { id: '2', title: 'Máster Metodologías Activas', subjects: [{code:'02MADI', name:'Habilidades'}] },
+                { id: '3', title: 'Grado Educación Infantil', subjects: [{code:'43GEIN', name:'Dificultades'}, {code:'8GEIN', name:'Lenguaje'}] },
+                { id: '4', title: 'Grado Educación Primaria', subjects: [{code:'05GEPR', name:'Familia y Escuela'}] }
+            ]
+        };
+
+        const app = {
+            show(id) {
+                document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+                document.getElementById(id).classList.remove('hidden');
+                document.getElementById('breadcrumbs').classList.toggle('hidden', id === 'view-home');
+            },
+            renderDegrees() {
+                const g = document.getElementById('degrees-grid');
+                g.innerHTML = '';
+                data.degrees.forEach(d => {
+                    g.innerHTML += `<div class="card"><h3>${d.title}</h3><button class="btn" onclick="app.loadDegree('${d.id}')">Ver Asignaturas</button></div>`;
+                });
+                this.show('view-home');
+            },
+            loadDegree(id) {
+                const d = data.degrees.find(x => x.id === id);
+                document.getElementById('degree-title').innerText = d.title;
+                const g = document.getElementById('subjects-grid');
+                g.innerHTML = '';
+                d.subjects.forEach(s => {
+                    g.innerHTML += `<div class="card"><h3>${s.code}</h3><p>${s.name}</p><button class="btn" onclick="app.loadSubject('${s.code}', '${s.name}')">Acceder</button></div>`;
+                });
+                this.show('view-subjects');
+            },
+            loadSubject(code, name) {
+                document.getElementById('subject-title').innerText = code + " - " + name;
+                this.show('view-levels');
+            },
+            loadSimulations(n) {
+                document.getElementById('level-title').innerText = "Simulaciones - Nivel " + n;
+                const g = document.getElementById('simulations-grid');
+                g.innerHTML = '';
+                for(let i=1; i<=20; i++) g.innerHTML += `<div style="background:#eee; padding:20px; border-radius:8px; text-align:center">Sim ${i}</div>`;
+                this.show('view-simulations');
+            },
+            goHome() { this.renderDegrees(); }
+        };
+        app.renderDegrees();
+    </script>
+</body>
+</html>
