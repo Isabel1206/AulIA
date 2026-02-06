@@ -21,13 +21,11 @@
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
 
         header { padding: 40px 20px; text-align: center; }
-        
         .logo-container { margin-bottom: 20px; display: flex; justify-content: center; }
         .logo-img { max-width: 300px; height: auto; }
         .hero-desc { max-width: 700px; margin: 20px auto; font-size: 1.1rem; color: #555; }
 
-        /* Estilos generales Grid y Cards */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; padding: 20px 0; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; padding: 20px 0; }
         .sim-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; padding: 20px 0; }
 
         .card { 
@@ -36,52 +34,36 @@
             border-radius: var(--radius); 
             border: 1px solid #eee;
             transition: 0.3s;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            min-height: 200px; /* Altura mínima para igualar */
+            display: flex; flex-direction: column; justify-content: space-between;
         }
         .card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-        
-        .card h3 { color: var(--primary); margin-bottom: 10px; font-size: 1.1rem; word-break: break-word; }
-        .card p { font-size: 0.95rem; color: #444; margin-bottom: 15px; line-height: 1.4; }
+        .card h3 { color: var(--primary); margin-bottom: 10px; font-size: 1.2rem; }
+        .card p { font-size: 0.95rem; color: #444; margin-bottom: 15px; }
 
-        /* Estilos específicos para los Casos */
         .case-container {
-            background: #fff;
-            padding: 30px;
-            border-radius: var(--radius);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            margin-bottom: 30px;
+            background: #fff; padding: 30px; border-radius: var(--radius);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px;
             border-left: 5px solid var(--primary);
         }
-        .case-text { font-size: 1.05rem; line-height: 1.6; color: #333; }
+        .case-text { font-size: 1.05rem; line-height: 1.6; color: #333; white-space: pre-line; }
         .case-text ul { margin-left: 20px; margin-top: 10px; }
-        .case-text li { margin-bottom: 5px; }
 
-        /* Estilos de las Tareas y el Chat */
         .task-block { margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px; }
         .task-title { font-weight: bold; color: var(--primary); font-size: 1.1rem; margin-bottom: 10px; }
         .task-desc { margin-bottom: 15px; color: #555; }
 
         .chat-box {
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin-top: 15px;
-            display: flex; flex-direction: column;
-            overflow: hidden;
+            background: #fff; border: 1px solid #ddd; border-radius: 8px;
+            margin-top: 15px; display: flex; flex-direction: column; overflow: hidden;
         }
         .chat-header { 
             background: #f4f4f4; padding: 10px 15px; font-weight: bold; color: var(--primary);
-            border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid #ddd;
         }
-        
         .chat-messages {
             height: 300px; overflow-y: auto; padding: 15px; background: #fafafa;
             display: flex; flex-direction: column; gap: 10px;
         }
-        
         .message { padding: 10px 15px; border-radius: 12px; max-width: 85%; font-size: 0.95rem; line-height: 1.4; }
         .msg-user { align-self: flex-end; background-color: var(--chat-user); color: #004d4d; border-bottom-right-radius: 2px; }
         .msg-ai { align-self: flex-start; background-color: var(--chat-ai); color: #2e7d32; border-bottom-left-radius: 2px; border: 1px solid #c8e6c9; }
@@ -89,13 +71,8 @@
         .chat-input-area { display: flex; gap: 10px; padding: 10px; background: #fff; border-top: 1px solid #eee; }
         .chat-input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
         .chat-btn { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; }
-        .chat-btn:hover { opacity: 0.9; }
-
-        /* Estilos Simulaciones */
         .card-sim { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 20px; text-align: center; color: #555; cursor: default; }
         .card-ia { background: #e6fcfc; border: 2px dashed var(--primary); cursor: pointer; color: var(--primary); font-weight: bold; }
-        .card-ia:hover { background: #d0f0f0; }
-
         .btn { background: var(--primary); color: white; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; width: 100%; margin-top: auto; }
         .hidden { display: none; }
         .breadcrumbs { margin: 20px 0; color: var(--primary); cursor: pointer; font-size: 0.9rem; }
@@ -109,9 +86,7 @@
                 <img src="logo.png" alt="Logo AulIA" class="logo-img" onerror="this.style.display='none'; document.getElementById('alt-logo').style.display='block'">
                 <h1 id="alt-logo" style="display:none; color:var(--primary); font-size:2.5rem;">AulIA</h1>
             </div>
-            <p class="hero-desc">
-                Plataforma de simulaciones educativas basada en IA generativa. Practica la toma de decisiones y la reflexión docente en entornos profesionales seguros.
-            </p>
+            <p class="hero-desc">Plataforma de simulaciones educativas basada en IA generativa. Practica la toma de decisiones y la reflexión docente en entornos profesionales seguros.</p>
         </div>
     </header>
 
@@ -169,11 +144,8 @@
 
         <section id="view-uc3-case-detail" class="hidden">
             <h2 id="case-title" style="margin-bottom:20px; color:var(--primary)"></h2>
-            
             <div id="case-content" class="case-container"></div>
-
-            <div id="case-tasks-container">
-                </div>
+            <div id="case-tasks-container"></div>
         </section>
 
         <section id="view-uc3-levels" class="hidden">
@@ -197,57 +169,84 @@
     </div>
 
     <script>
-        // --- CEREBRO DE LA IA (Training Data) ---
-        // Lógica de validación pedagógica basada en los PDFs
+        // --- CEREBRO IA (ENTRENAMIENTO TEÓRICO) ---
         const aiBrain = {
             marina: {
-                focus: "disfonia",
-                check: (text) => {
+                evaluate: (text) => {
                     const t = text.toLowerCase();
-                    if(t.includes('cirugía') || t.includes('operar')) return "⚠️ <b>Precaución:</b> ¿Es la cirugía la primera opción en una niña de 5 años con nódulos recientes? Revisa el concepto de higiene vocal.";
-                    if(t.includes('higiene vocal') || t.includes('pautas') || t.includes('gritos')) return "✅ Correcto. La intervención debe priorizar la eliminación del mal uso vocal (gritos, tensión) y la reeducación.";
-                    return "Interesante. Asegúrate de diferenciar si el problema es orgánico puro o funcional (por mal uso). ¿Qué pautas darías a la familia?";
+                    // Detectar error: Cirugía o medicación en niños como primera opción
+                    if(t.includes('cirugía') || t.includes('operar') || t.includes('fármacos')) {
+                        return "⚠️ <b>Revisión Teórica:</b> Estás proponiendo una intervención invasiva. Según el manual de 'Trastornos de la Comunicación', en disfonías infantiles (nódulos), ¿cuál es la primera línea de actuación antes de quirófano? Pista: tiene que ver con el 'mal uso' que hace Marina.";
+                    }
+                    // Detectar acierto parcial: Rehabilitación sin mencionar higiene
+                    if(t.includes('rehabilitación') && !t.includes('higiene') && !t.includes('grito')) {
+                        return "Vas por buen camino con la rehabilitación, pero... ¿de qué sirve rehabilitar si Marina sigue gritando en el patio? ¿Qué concepto preventivo nos falta aquí?";
+                    }
+                    // Acierto: Higiene vocal
+                    if(t.includes('higiene vocal') || t.includes('pautas') || t.includes('hidratación')) {
+                        return "✅ <b>Correcto.</b> La higiene vocal es prioritaria. Ahora, para la Tarea 3, descríbeme una actividad concreta para que una niña de 5 años entienda qué es el 'abuso vocal' sin usar tecnicismos.";
+                    }
+                    return "Entiendo tu enfoque. Recuerda analizar los factores predisponentes del caso: Marina 'suele gritar'. ¿Cómo atajarías ese comportamiento específico desde el aula?";
                 }
             },
             anais: {
-                focus: "dislalia_fonetica",
-                check: (text) => {
+                evaluate: (text) => {
                     const t = text.toLowerCase();
-                    if(t.includes('simplifica') || t.includes('retraso')) return "⚠️ <b>Ojo:</b> Anaís tiene errores fijos y estables (ceceo, rotacismo). No parece un problema de 'organización' (fonológico), sino de ejecución (fonético). ¿Cómo cambia eso tu diagnóstico?";
-                    if(t.includes('articulación') || t.includes('praxias') || t.includes('punto')) return "✅ Bien visto. Al ser un problema fonético (articulatorio), las actividades de praxias y punto de articulación son adecuadas.";
-                    return "Recuerda revisar si Anaís 'no sabe' pronunciar el sonido (motor/fonético) o 'no sabe' usarlo en la palabra (mental/fonológico).";
+                    // Detectar error: Confusión con Fonológico (retraso, simplificación)
+                    if(t.includes('fonológico') || t.includes('simplifica') || t.includes('retraso del lenguaje')) {
+                        return "🛑 <b>Alto ahí.</b> Revisa bien los errores de Anaís. Tiene Seseo y Rotacismo constantes. No dice 'una veces sí y otras no' (inconsistencia), sino que tiene un error fijo en la articulación. ¿Seguro que es fonológico (mental) o es fonético (motor)?";
+                    }
+                    // Acierto: Dislalia / Fonético
+                    if(t.includes('dislalia') || t.includes('fonético') || t.includes('articulatorio')) {
+                        return "✅ <b>Exacto.</b> Es una dificultad articulatoria (Dislalia funcional). Al ser un problema 'mecánico', ¿qué tipo de ejercicios son los más adecuados para entrenar la lengua y el punto de articulación?";
+                    }
+                    return "Fíjate en que Anaís sustituye /c/ por /s/ sistemáticamente. ¿Dirías que es un problema de que 'no sabe organizar la frase' o de que 'no coloca bien la lengua'?";
                 }
             },
             raul: {
-                focus: "fonologico",
-                check: (text) => {
+                evaluate: (text) => {
                     const t = text.toLowerCase();
-                    if(t.includes('dislalia') || t.includes('boca') || t.includes('lengua')) return "⚠️ <b>Revisión:</b> El texto dice que Raúl *sabe* articular los fonemas aislados. Su problema es al formar palabras (dice 'milón' por 'limón'). Eso no es Dislalia, es Trastorno Fonológico.";
-                    if(t.includes('bosch') || t.includes('estructur') || t.includes('discrimin')) return "✅ Exacto. Estás identificando procesos de simplificación (Laura Bosch). La intervención debe ser cognitiva/auditiva, no motora.";
-                    return "¿Es un problema de músculos o de estructuración mental de la palabra?";
+                    // Detectar error: Tratarlo como dislalia (ejercicios de soplo/praxias)
+                    if(t.includes('praxias') || t.includes('soplo') || t.includes('muscular') || t.includes('dislalia')) {
+                        return "⚠️ <b>Corrección Teórica:</b> El texto dice explícitamente que Raúl 'sabe y puede articular todos los fonemas'. Si sus músculos funcionan bien, ¿tienen sentido las praxias? Revisa el concepto de 'Procesos de Simplificación' de Laura Bosch.";
+                    }
+                    // Acierto: Trastorno Fonológico
+                    if(t.includes('fonológico') || t.includes('bosch') || t.includes('discriminación') || t.includes('estructura')) {
+                        return "✅ <b>Muy bien.</b> Es un problema de organización del sistema (Fonológico). Has mencionado a Laura Bosch, excelente. ¿Qué actividad propondrías para mejorar su conciencia fonológica (rimas, contar sílabas...)?";
+                    }
+                    return "Raúl dice 'milón' por 'limón' (Metátesis). ¿Es un problema de pronunciación o de ordenación mental de los sonidos?";
                 }
             },
             angel: {
-                focus: "disglosia",
-                check: (text) => {
+                evaluate: (text) => {
                     const t = text.toLowerCase();
-                    if(t.includes('enseñar') && !t.includes('médico')) return "⚠️ Recuerda: hay una causa orgánica física (frenillo corto). Antes de enseñar a pronunciar, ¿qué intervención externa se necesita?";
-                    if(t.includes('frenectomía') || t.includes('cirugía') || t.includes('médic')) return "✅ Correcto. Al ser una Disglosia (orgánica), se requiere valoración médica primero. Luego el logopeda trabaja la rehabilitación.";
-                    return "Valora la causa anatómica descrita en el caso.";
+                    // Detectar error: Ignorar la causa orgánica
+                    if(t.includes('reeducación') && !t.includes('médico') && !t.includes('frenillo')) {
+                        return "Estás proponiendo reeducación, pero... ¿has leído la 'Información familiar'? Hay una barrera física (frenillo corto). Si no solucionamos eso primero, ¿podrá Ángel pronunciar la /r/ por mucho que practique?";
+                    }
+                    // Acierto: Disglosia / Derivación médica
+                    if(t.includes('orgánico') || t.includes('disglosia') || t.includes('médico') || t.includes('cirugía')) {
+                        return "✅ <b>Correcto.</b> Estamos ante una Disglosia por causa orgánica. El primer paso es la valoración médica (posible frenectomía). Como docente, ¿cómo apoyarías emocionalmente a Ángel mientras espera esa intervención?";
+                    }
+                    return "¿Cómo se clasifican los trastornos del habla cuando hay una alteración en los órganos fonoarticulatorios (lengua, labios...)?";
                 }
             },
             luis: {
-                focus: "neurologico",
-                check: (text) => {
+                evaluate: (text) => {
                     const t = text.toLowerCase();
-                    if(t.includes('tartamudez') || t.includes('disfemia')) return "⚠️ <b>Cuidado:</b> Parece tartamudez por los bloqueos, pero el caso menciona 'espasticidad' y 'debilidad' corporal. La disfemia no tiene esos signos motores. Podría ser Disartria.";
-                    if(t.includes('neurológ') || t.includes('disartria') || t.includes('motor')) return "✅ Muy bien detectado. Los signos físicos (espasticidad) apuntan a un origen neurológico, no es una simple dificultad de fluidez.";
-                    return "Fíjate bien en los síntomas físicos que acompañan al habla lenta.";
+                    // Detectar error: Quedarse solo en la tartamudez
+                    if((t.includes('tartamudez') || t.includes('disfemia')) && !t.includes('neuro') && !t.includes('disartria')) {
+                        return "⚠️ <b>Cuidado con la trampa.</b> Luís tiene bloqueos, sí, pero el texto menciona 'espasticidad' y 'debilidad' en un lado del cuerpo. La tartamudez es un trastorno de fluidez, no motor corporal. Busca en el manual: ¿qué trastorno afecta al habla y tiene origen neurológico?";
+                    }
+                    // Acierto: Disartria / Neurológico
+                    if(t.includes('disartria') || t.includes('neurológico') || t.includes('motor')) {
+                        return "✅ <b>Bien visto.</b> No es una simple disfemia. Los signos de espasticidad apuntan a una Disartria o daño neurológico. La intervención debe ser multidisciplinar. ¿Qué especialistas deberían intervenir aquí además del AL?";
+                    }
+                    return "Luís tiene un tono bajo, monótono y espasticidad. Esos son signos de alerta biológica. ¿Hacia dónde orientarías el diagnóstico?";
                 }
             }
         };
 
-        // CONTENIDO DE LOS CASOS
         const casesData = {
             marina: `
                 <strong>Antecedentes:</strong> Marina es una niña de 5 años que tiene una voz ligeramente grave en relación con su constitución y edad, y parece que realiza un gran esfuerzo vocal cuando habla.<br><br>
@@ -301,23 +300,15 @@
         const data = {
             degrees: [
                 { 
-                    id: '1', 
-                    title: 'Máster Universitario en Formación del Profesorado', 
-                    subjects: [
-                        {code:'01MSEC', name:'01MSEC_Aprendizaje y desarrollo de la personalidad'}, 
-                        {code:'03MSEC', name:'03MSEC_Sociedad, familia y educación'}
-                    ] 
+                    id: '1', title: 'Máster Universitario en Formación del Profesorado', 
+                    subjects: [{code:'01MSEC', name:'01MSEC_Aprendizaje y desarrollo de la personalidad'}, {code:'03MSEC', name:'03MSEC_Sociedad, familia y educación'}] 
                 },
                 { 
-                    id: '2', 
-                    title: 'Máster Universitario en Metodologías Activas y Digitales', 
-                    subjects: [
-                        {code:'02MADI', name:'02MADI_Habilidades Docentes Avanzadas para el Aprendizaje'}
-                    ] 
+                    id: '2', title: 'Máster Universitario en Metodologías Activas y Digitales', 
+                    subjects: [{code:'02MADI', name:'02MADI_Habilidades Docentes Avanzadas para el Aprendizaje'}] 
                 },
                 { 
-                    id: '3', 
-                    title: 'Grado Universitario en Educación Infantil', 
+                    id: '3', title: 'Grado Universitario en Educación Infantil', 
                     subjects: [
                         {code:'43GEIN', name:'43GEIN_04_A_2026-27_Dificultades en el aprendizaje, trastornos de la comunicación y TDA / hiperactividad'}, 
                         {code:'8GEIN', name:'8GEIN_04_A_2026-27_Estimulación del lenguaje oral'}
@@ -333,13 +324,8 @@
                 document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
                 document.getElementById(id).classList.remove('hidden');
                 const bc = document.getElementById('breadcrumbs');
-                if (id === 'view-home') {
-                    bc.classList.add('hidden');
-                    this.history = [];
-                } else {
-                    bc.classList.remove('hidden');
-                    this.updateBreadcrumbs();
-                }
+                if (id === 'view-home') { bc.classList.add('hidden'); this.history = []; } 
+                else { bc.classList.remove('hidden'); this.updateBreadcrumbs(); }
             },
 
             updateBreadcrumbs() {
@@ -356,12 +342,7 @@
                 const g = document.getElementById('degrees-grid');
                 g.innerHTML = '';
                 data.degrees.forEach(d => {
-                    g.innerHTML += `
-                        <div class="card">
-                            <h3>${d.title}</h3>
-                            <p>Accede a las asignaturas disponibles.</p>
-                            <button class="btn" onclick="app.loadDegree('${d.id}')">Ver Asignaturas</button>
-                        </div>`;
+                    g.innerHTML += `<div class="card"><h3>${d.title}</h3><p>Accede a las asignaturas disponibles.</p><button class="btn" onclick="app.loadDegree('${d.id}')">Ver Asignaturas</button></div>`;
                 });
                 this.show('view-home');
             },
@@ -373,22 +354,14 @@
                 const g = document.getElementById('subjects-grid');
                 g.innerHTML = '';
                 d.subjects.forEach(s => {
-                    // Se muestran los códigos completos como títulos y los nombres completos debajo
-                    g.innerHTML += `
-                        <div class="card">
-                            <h3>${s.code}</h3>
-                            <p>${s.name}</p>
-                            <button class="btn" onclick="app.loadSubject('${s.name}')">Acceder</button>
-                        </div>`;
+                    g.innerHTML += `<div class="card"><h3>${s.code}</h3><p>${s.name}</p><button class="btn" onclick="app.loadSubject('${s.name}')">Acceder</button></div>`;
                 });
                 this.show('view-subjects');
             },
 
             loadSubject(fullName) {
                 this.history.push("Asignatura");
-                // Comprobación exacta del nombre largo
                 const especialSubject = '43GEIN_04_A_2026-27_Dificultades en el aprendizaje, trastornos de la comunicación y TDA / hiperactividad';
-                
                 if (fullName === especialSubject) {
                     document.getElementById('unit-subject-title').innerText = fullName;
                     const g = document.getElementById('units-grid');
@@ -398,7 +371,6 @@
                     g.innerHTML += `<div class="card"><h3>Unidad Competencial 4</h3><button class="btn" onclick="alert('Próximamente')">Entrar</button></div>`;
                     this.show('view-units');
                 } else {
-                    // Manejo para las otras asignaturas (que no están vacías)
                     document.getElementById('subject-title').innerText = fullName;
                     this.show('view-levels');
                 }
@@ -415,17 +387,11 @@
             },
 
             loadCase(caseKey) {
-                const names = {
-                    marina: "Caso de Marina", anais: "Caso de Anaís", raul: "Caso de Raúl", angel: "Caso de Ángel", luis: "Caso de Luís"
-                };
-                
+                const names = { marina: "Caso de Marina", anais: "Caso de Anaís", raul: "Caso de Raúl", angel: "Caso de Ángel", luis: "Caso de Luís" };
                 this.history.push(names[caseKey]);
                 document.getElementById('case-title').innerText = names[caseKey];
-                
-                // Inyectar el contenido HTML del caso
                 document.getElementById('case-content').innerHTML = `<div class="case-text">${casesData[caseKey]}</div>`;
                 
-                // Generar las tareas con sus chats específicos
                 const tasksContainer = document.getElementById('case-tasks-container');
                 tasksContainer.innerHTML = '';
                 
@@ -436,9 +402,7 @@
                             <div class="task-title">${task.title}</div>
                             <p class="task-desc">${task.desc}</p>
                             <div class="chat-box">
-                                <div class="chat-header">
-                                    <span>💬 Tutor Virtual</span>
-                                </div>
+                                <div class="chat-header"><span>💬 Tutor Virtual</span></div>
                                 <div class="chat-messages" id="${chatId}">
                                     <div class="message msg-ai">Hola. Soy tu tutor virtual, ¿qué planteamiento tienes para esta tarea?</div>
                                 </div>
@@ -450,59 +414,44 @@
                         </div>
                     `;
                 });
-
                 this.show('view-uc3-case-detail');
             },
 
             sendMessage(caseKey, taskId) {
                 const chatId = `chat-${caseKey}-${taskId}`;
-                const inputId = `input-${chatId}`;
-                const input = document.getElementById(inputId);
+                const input = document.getElementById(`input-${chatId}`);
                 const text = input.value.trim();
-                
                 if (!text) return;
 
-                // 1. Mostrar mensaje usuario
                 const msgContainer = document.getElementById(chatId);
                 msgContainer.innerHTML += `<div class="message msg-user">${text}</div>`;
                 input.value = '';
                 msgContainer.scrollTop = msgContainer.scrollHeight;
 
-                // 2. Simular "Escribiendo..."
                 const loadingId = `loading-${Date.now()}`;
                 msgContainer.innerHTML += `<div id="${loadingId}" class="message msg-ai" style="opacity:0.7">...</div>`;
                 msgContainer.scrollTop = msgContainer.scrollHeight;
 
-                // 3. Generar respuesta IA
                 setTimeout(() => {
                     document.getElementById(loadingId).remove();
-                    const aiResponse = this.generateAIResponse(caseKey, text);
-                    msgContainer.innerHTML += `<div class="message msg-ai">${aiResponse}</div>`;
+                    // Usar el cerebro entrenado
+                    let response = "Interesante. Continúa desarrollando esa idea.";
+                    if(aiBrain[caseKey] && aiBrain[caseKey].evaluate) {
+                        response = aiBrain[caseKey].evaluate(text);
+                    }
+                    msgContainer.innerHTML += `<div class="message msg-ai">${response}</div>`;
                     msgContainer.scrollTop = msgContainer.scrollHeight;
                 }, 1000);
             },
 
-            generateAIResponse(caseKey, text) {
-                // Utiliza el "cerebro" configurado al inicio
-                if (aiBrain[caseKey]) {
-                    return aiBrain[caseKey].check(text);
-                }
-                return "Entiendo. Continúa desarrollando tu idea basándote en los síntomas descritos.";
-            },
-
-            loadUC3PracticeLevels() {
-                this.history.push("Práctica");
-                this.show('view-uc3-levels');
-            },
+            loadUC3PracticeLevels() { this.history.push("Práctica"); this.show('view-uc3-levels'); },
 
             loadUC3SimGrid(level) {
                 this.history.push("Nivel " + level);
                 document.getElementById('uc3-sim-title').innerText = "UC3 - Práctica - Nivel " + level;
                 const g = document.getElementById('uc3-sim-grid');
                 g.innerHTML = '';
-                for(let i=1; i<=20; i++) {
-                    g.innerHTML += `<div class="card-sim"><strong>Simulación ${i}</strong></div>`;
-                }
+                for(let i=1; i<=20; i++) g.innerHTML += `<div class="card-sim"><strong>Simulación ${i}</strong></div>`;
                 g.innerHTML += `<div class="card-sim card-ia" onclick="alert('Generando nueva simulación con IA...')"><strong>+ Acceso a más simulaciones generadas por IA</strong></div>`;
                 this.show('view-uc3-sims');
             },
@@ -512,9 +461,7 @@
                 document.getElementById('level-title').innerText = "Simulaciones - Nivel " + n;
                 const g = document.getElementById('simulations-grid');
                 g.innerHTML = '';
-                for(let i=1; i<=20; i++) {
-                    g.innerHTML += `<div class="card-sim"><strong>Simulación ${i}</strong></div>`;
-                }
+                for(let i=1; i<=20; i++) g.innerHTML += `<div class="card-sim"><strong>Simulación ${i}</strong></div>`;
                 this.show('view-simulations');
             }
         };
