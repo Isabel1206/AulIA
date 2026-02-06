@@ -20,18 +20,8 @@
 
         header { padding: 40px 20px; text-align: center; }
         
-        /* Contenedor del logo */
-        .logo-container {
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .logo-img {
-            max-width: 300px;
-            height: auto;
-        }
-
+        .logo-container { margin-bottom: 20px; display: flex; justify-content: center; }
+        .logo-img { max-width: 300px; height: auto; }
         .hero-desc { max-width: 700px; margin: 20px auto; font-size: 1.1rem; color: #555; }
 
         /* Tarjetas y Grid */
@@ -48,7 +38,6 @@
         }
         .card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
         
-        /* Títulos dentro de las tarjetas */
         .card h3 { color: var(--primary); margin-bottom: 10px; font-size: 1.2rem; }
         .card p { font-size: 0.95rem; color: #444; margin-bottom: 15px; }
 
@@ -61,7 +50,7 @@
             cursor: pointer; 
             font-weight: 600;
             width: 100%;
-            margin-top: auto; /* Empuja el botón al final */
+            margin-top: auto; 
         }
 
         .hidden { display: none; }
@@ -94,36 +83,24 @@
             <div class="grid" id="subjects-grid"></div>
         </section>
 
-        <section id="view-levels" class="hidden">
+        <section id="view-units" class="hidden">
             <h2 id="subject-title" style="margin-bottom:20px; color:var(--primary)"></h2>
-            <div class="grid">
-                <div class="card">
-                    <h3>Nivel 1 (Fácil)</h3>
-                    <p>Casos guiados, menor complejidad.</p>
-                    <button class="btn" onclick="app.loadSimulations(1)">Acceder</button>
+            <p style="margin-bottom:20px;">Selecciona una Unidad Competencial para trabajar:</p>
+            <div class="grid" id="units-grid">
                 </div>
-                <div class="card">
-                    <h3>Nivel 2 (Intermedio)</h3>
-                    <p>Casos con más variables y decisiones.</p>
-                    <button class="btn" onclick="app.loadSimulations(2)">Acceder</button>
-                </div>
-                <div class="card">
-                    <h3>Nivel 3 (Difícil)</h3>
-                    <p>Casos complejos, dilemas y toma de decisiones avanzada.</p>
-                    <button class="btn" onclick="app.loadSimulations(3)">Acceder</button>
-                </div>
-            </div>
         </section>
 
-        <section id="view-simulations" class="hidden">
-            <h2 id="level-title" style="margin-bottom:20px; color:var(--primary)"></h2>
-            <p style="margin-bottom:20px;">Selecciona una simulación para comenzar:</p>
-            <div id="simulations-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap:15px;"></div>
+        <section id="view-content" class="hidden">
+            <h2 id="unit-title" style="margin-bottom:20px; color:var(--primary)"></h2>
+            <div style="padding: 40px; background: #eee; border-radius: 12px; text-align: center; color: #666;">
+                <p><strong>Espacio de trabajo listo</strong></p>
+                <p>Aquí diseñaremos las actividades para esta Unidad Competencial.</p>
+            </div>
         </section>
     </div>
 
     <script>
-        // DATOS DE LA PLATAFORMA (Estructura actualizada)
+        // DATOS DE LA PLATAFORMA
         const data = {
             degrees: [
                 { 
@@ -145,23 +122,22 @@
                     id: '3', 
                     title: 'Grado Universitario en Educación Infantil', 
                     subjects: [
-                        {code:'43GEIN', name:'43GEIN_10_A_2025-26_Dificultades en el aprendizaje, trastornos de la comunicación y TDA / hiperactividad'}, 
+                        // Nombre ACTUALIZADO según tu última petición
+                        {code:'43GEIN', name:'43GEIN_04_A_2026-27_Dificultades en el aprendizaje, trastornos de la comunicación y TDA / hiperactividad'}, 
                         {code:'8GEIN', name:'8GEIN_04_A_2026-27_Estimulación del lenguaje oral'}
                     ] 
                 }
-                // Grado Primaria ELIMINADO
             ]
         };
 
         // LÓGICA DE LA APLICACIÓN
         const app = {
-            history: [], // Para controlar la navegación hacia atrás
+            history: [], 
 
             show(id) {
                 document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
                 document.getElementById(id).classList.remove('hidden');
                 
-                // Actualizar breadcrumbs
                 const bc = document.getElementById('breadcrumbs');
                 if (id === 'view-home') {
                     bc.classList.add('hidden');
@@ -175,13 +151,11 @@
             updateBreadcrumbs() {
                 const bc = document.getElementById('breadcrumbs');
                 let text = "Inicio";
-                // Lógica simple de migas de pan basada en el historial
                 if (this.history.length > 0) text += " > " + this.history[this.history.length-1];
                 bc.innerText = "< " + text;
             },
 
             goBack() {
-                // Sistema simple para volver siempre al inicio por seguridad
                 this.renderDegrees();
             },
 
@@ -209,7 +183,6 @@
                 g.innerHTML = '';
                 
                 d.subjects.forEach(s => {
-                    // Mostramos el código corto en el título y el nombre largo en el texto
                     g.innerHTML += `
                     <div class="card">
                         <h3>${s.code}</h3>
@@ -223,22 +196,31 @@
             loadSubject(fullName) {
                 this.history.push("Asignatura");
                 document.getElementById('subject-title').innerText = fullName;
-                this.show('view-levels');
+                
+                // Aquí definimos las Unidades Competenciales específicas que pediste
+                // (UC 2, 3 y 4)
+                const units = [2, 3, 4]; 
+                
+                const g = document.getElementById('units-grid');
+                g.innerHTML = '';
+                
+                units.forEach(u => {
+                    g.innerHTML += `
+                    <div class="card">
+                        <h3>Unidad Competencial ${u}</h3>
+                        <p>Accede a los contenidos de esta unidad.</p>
+                        <button class="btn" onclick="app.loadUnit(${u})">Entrar</button>
+                    </div>`;
+                });
+
+                this.show('view-units');
             },
 
-            loadSimulations(n) {
-                this.history.push("Nivel " + n);
-                document.getElementById('level-title').innerText = "Simulaciones - Nivel " + n;
-                const g = document.getElementById('simulations-grid');
-                g.innerHTML = '';
-                // Generar 20 placeholders
-                for(let i=1; i<=20; i++) {
-                    g.innerHTML += `
-                    <div style="background:#eee; padding:20px; border-radius:8px; text-align:center; border:1px solid #ddd; cursor:pointer;" onclick="alert('Próximamente: Simulación ${i}')">
-                        <strong>Simulación ${i}</strong>
-                    </div>`;
-                }
-                this.show('view-simulations');
+            loadUnit(u) {
+                this.history.push("UC " + u);
+                document.getElementById('unit-title').innerText = "Unidad Competencial " + u;
+                // Dejamos la vista limpia, sin tarjetas de simulaciones antiguas
+                this.show('view-content');
             }
         };
 
