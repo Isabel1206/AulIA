@@ -26,6 +26,10 @@
 
         /* Tarjetas y Grid */
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; padding: 20px 0; }
+        
+        /* Grid especial para simulaciones pequeñas */
+        .sim-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; padding: 20px 0; }
+
         .card { 
             background: var(--card-bg); 
             padding: 30px; 
@@ -40,6 +44,27 @@
         
         .card h3 { color: var(--primary); margin-bottom: 10px; font-size: 1.2rem; }
         .card p { font-size: 0.95rem; color: #444; margin-bottom: 15px; }
+
+        /* Estilo para tarjetas de simulación (no accesibles aún) */
+        .card-sim {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            color: #555;
+            cursor: default; /* Cursor normal para indicar que no es clicable */
+        }
+        
+        /* Estilo especial para la tarjeta 21 (IA) */
+        .card-ia {
+            background: #e6fcfc;
+            border: 2px dashed var(--primary);
+            cursor: pointer;
+            color: var(--primary);
+            font-weight: bold;
+        }
+        .card-ia:hover { background: #d0f0f0; }
 
         .btn { 
             background: var(--primary); 
@@ -72,7 +97,7 @@
     </header>
 
     <div class="container">
-        <div id="breadcrumbs" class="breadcrumbs hidden" onclick="app.goBack()"> Inicio </div>
+        <div id="breadcrumbs" class="breadcrumbs hidden" onclick="app.goHome()"> Inicio </div>
         
         <section id="view-home">
             <div class="grid" id="degrees-grid"></div>
@@ -86,77 +111,83 @@
         <section id="view-levels" class="hidden">
             <h2 id="subject-title" style="margin-bottom:20px; color:var(--primary)"></h2>
             <div class="grid">
-                <div class="card">
-                    <h3>Nivel 1 (Fácil)</h3>
-                    <p>Casos guiados, menor complejidad.</p>
-                    <button class="btn" onclick="app.loadSimulations(1)">Acceder</button>
-                </div>
-                <div class="card">
-                    <h3>Nivel 2 (Intermedio)</h3>
-                    <p>Casos con más variables y decisiones.</p>
-                    <button class="btn" onclick="app.loadSimulations(2)">Acceder</button>
-                </div>
-                <div class="card">
-                    <h3>Nivel 3 (Difícil)</h3>
-                    <p>Casos complejos, dilemas y toma de decisiones avanzada.</p>
-                    <button class="btn" onclick="app.loadSimulations(3)">Acceder</button>
-                </div>
+                <div class="card"><h3>Nivel 1 (Fácil)</h3><button class="btn" onclick="app.loadSimulations(1)">Acceder</button></div>
+                <div class="card"><h3>Nivel 2 (Intermedio)</h3><button class="btn" onclick="app.loadSimulations(2)">Acceder</button></div>
+                <div class="card"><h3>Nivel 3 (Difícil)</h3><button class="btn" onclick="app.loadSimulations(3)">Acceder</button></div>
             </div>
         </section>
 
         <section id="view-units" class="hidden">
             <h2 id="unit-subject-title" style="margin-bottom:20px; color:var(--primary)"></h2>
             <p style="margin-bottom:20px;">Selecciona la Unidad Competencial:</p>
+            <div class="grid" id="units-grid">
+                </div>
+        </section>
+
+        <section id="view-uc3-menu" class="hidden">
+            <h2 style="margin-bottom:20px; color:var(--primary)">Unidad Competencial 3</h2>
             <div class="grid">
                 <div class="card">
-                    <h3>Unidad Competencial 2</h3>
-                    <p>Accede a los contenidos de la UC2.</p>
-                    <button class="btn" onclick="alert('Contenido UC2 próximamente')">Entrar</button>
+                    <h3>Actividad de la Unidad Competencial 3</h3>
+                    <p>Espacio para el desarrollo de la actividad evaluable.</p>
+                    <button class="btn" onclick="alert('Espacio de actividad en construcción')">Acceder</button>
                 </div>
                 <div class="card">
-                    <h3>Unidad Competencial 3</h3>
-                    <p>Accede a los contenidos de la UC3.</p>
-                    <button class="btn" onclick="alert('Contenido UC3 próximamente')">Entrar</button>
-                </div>
-                <div class="card">
-                    <h3>Unidad Competencial 4</h3>
-                    <p>Accede a los contenidos de la UC4.</p>
-                    <button class="btn" onclick="alert('Contenido UC4 próximamente')">Entrar</button>
+                    <h3>Práctica con simulaciones</h3>
+                    <p>Entrenamiento práctico con diferentes niveles de dificultad.</p>
+                    <button class="btn" onclick="app.loadUC3PracticeLevels()">Acceder</button>
                 </div>
             </div>
         </section>
 
+        <section id="view-uc3-levels" class="hidden">
+            <h2 style="margin-bottom:20px; color:var(--primary)">UC3 - Práctica con simulaciones</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>Nivel 1 (Fácil)</h3>
+                    <p>Casos guiados, menor complejidad.</p>
+                    <button class="btn" onclick="app.loadUC3SimGrid(1)">Acceder</button>
+                </div>
+                <div class="card">
+                    <h3>Nivel 2 (Intermedio)</h3>
+                    <p>Casos con más variables y decisiones.</p>
+                    <button class="btn" onclick="app.loadUC3SimGrid(2)">Acceder</button>
+                </div>
+                <div class="card">
+                    <h3>Nivel 3 (Difícil)</h3>
+                    <p>Casos complejos, dilemas y toma de decisiones avanzada.</p>
+                    <button class="btn" onclick="app.loadUC3SimGrid(3)">Acceder</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-uc3-sims" class="hidden">
+            <h2 id="uc3-sim-title" style="margin-bottom:20px; color:var(--primary)"></h2>
+            <div id="uc3-sim-grid" class="sim-grid">
+                </div>
+        </section>
+
         <section id="view-simulations" class="hidden">
             <h2 id="level-title" style="margin-bottom:20px; color:var(--primary)"></h2>
-            <p style="margin-bottom:20px;">Selecciona una simulación para comenzar:</p>
-            <div id="simulations-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap:15px;"></div>
+            <div id="simulations-grid" class="sim-grid"></div>
         </section>
     </div>
 
     <script>
-        // DATOS DE LA PLATAFORMA
+        // DATOS
         const data = {
             degrees: [
                 { 
-                    id: '1', 
-                    title: 'Máster Universitario en Formación del Profesorado', 
-                    subjects: [
-                        {code:'01MSEC', name:'01MSEC_Aprendizaje y desarrollo de la personalidad'}, 
-                        {code:'03MSEC', name:'03MSEC_Sociedad, familia y educación'}
-                    ] 
+                    id: '1', title: 'Máster Universitario en Formación del Profesorado', 
+                    subjects: [{code:'01MSEC', name:'01MSEC_Aprendizaje y desarrollo de la personalidad'}, {code:'03MSEC', name:'03MSEC_Sociedad, familia y educación'}] 
                 },
                 { 
-                    id: '2', 
-                    title: 'Máster Universitario en Metodologías Activas y Digitales', 
-                    subjects: [
-                        {code:'02MADI', name:'02MADI_Habilidades Docentes Avanzadas para el Aprendizaje'}
-                    ] 
+                    id: '2', title: 'Máster Universitario en Metodologías Activas y Digitales', 
+                    subjects: [{code:'02MADI', name:'02MADI_Habilidades Docentes Avanzadas para el Aprendizaje'}] 
                 },
                 { 
-                    id: '3', 
-                    title: 'Grado Universitario en Educación Infantil', 
+                    id: '3', title: 'Grado Universitario en Educación Infantil', 
                     subjects: [
-                        // Nombre actualizado
                         {code:'43GEIN', name:'43GEIN_04_A_2026-27_Dificultades en el aprendizaje, trastornos de la comunicación y TDA / hiperactividad'}, 
                         {code:'8GEIN', name:'8GEIN_04_A_2026-27_Estimulación del lenguaje oral'}
                     ] 
@@ -164,7 +195,6 @@
             ]
         };
 
-        // LÓGICA DE LA APLICACIÓN
         const app = {
             history: [], 
 
@@ -189,7 +219,7 @@
                 bc.innerText = "< " + text;
             },
 
-            goBack() {
+            goHome() {
                 this.renderDegrees();
             },
 
@@ -211,11 +241,9 @@
             loadDegree(id) {
                 const d = data.degrees.find(x => x.id === id);
                 this.history = [d.title]; 
-                
                 document.getElementById('degree-title').innerText = d.title;
                 const g = document.getElementById('subjects-grid');
                 g.innerHTML = '';
-                
                 d.subjects.forEach(s => {
                     g.innerHTML += `
                     <div class="card">
@@ -229,38 +257,85 @@
 
             loadSubject(fullName) {
                 this.history.push("Asignatura");
-                
-                // --- AQUI ESTA EL CAMBIO IMPORTANTE ---
-                // Comprobamos si es la asignatura especial de "Dificultades..."
                 const especialSubject = '43GEIN_04_A_2026-27_Dificultades en el aprendizaje, trastornos de la comunicación y TDA / hiperactividad';
 
                 if (fullName === especialSubject) {
-                    // SI ES la asignatura especial: Vamos a la vista de UNIDADES
                     document.getElementById('unit-subject-title').innerText = fullName;
+                    // Renderizamos las unidades específicas
+                    const g = document.getElementById('units-grid');
+                    g.innerHTML = '';
+                    
+                    // UC 2
+                    g.innerHTML += `<div class="card"><h3>Unidad Competencial 2</h3><button class="btn" onclick="alert('Próximamente')">Entrar</button></div>`;
+                    
+                    // UC 3 (LA IMPORTANTE)
+                    g.innerHTML += `
+                    <div class="card">
+                        <h3>Unidad Competencial 3</h3>
+                        <p>Acceso a Actividades y Simulaciones.</p>
+                        <button class="btn" onclick="app.loadUC3Menu()">Entrar</button>
+                    </div>`;
+                    
+                    // UC 4
+                    g.innerHTML += `<div class="card"><h3>Unidad Competencial 4</h3><button class="btn" onclick="alert('Próximamente')">Entrar</button></div>`;
+                    
                     this.show('view-units');
                 } else {
-                    // SI NO es la especial: Vamos a la vista normal de NIVELES
                     document.getElementById('subject-title').innerText = fullName;
                     this.show('view-levels');
                 }
             },
 
+            // --- LÓGICA ESPECÍFICA PARA UC3 ---
+
+            loadUC3Menu() {
+                this.history.push("UC3");
+                this.show('view-uc3-menu');
+            },
+
+            loadUC3PracticeLevels() {
+                this.history.push("Práctica");
+                this.show('view-uc3-levels');
+            },
+
+            loadUC3SimGrid(level) {
+                this.history.push("Nivel " + level);
+                document.getElementById('uc3-sim-title').innerText = "UC3 - Práctica - Nivel " + level;
+                
+                const g = document.getElementById('uc3-sim-grid');
+                g.innerHTML = '';
+
+                // Crear 20 tarjetas NO accesibles
+                for(let i=1; i<=20; i++) {
+                    g.innerHTML += `
+                    <div class="card-sim">
+                        <strong>Simulación ${i}</strong>
+                    </div>`;
+                }
+
+                // Crear tarjeta 21 (IA)
+                g.innerHTML += `
+                <div class="card-sim card-ia" onclick="alert('Generando nueva simulación con IA...')">
+                    <strong>+ Acceso a más simulaciones generadas por IA</strong>
+                </div>`;
+
+                this.show('view-uc3-sims');
+            },
+
+            // --- LÓGICA ESTÁNDAR (Otras asignaturas) ---
+            
             loadSimulations(n) {
                 this.history.push("Nivel " + n);
                 document.getElementById('level-title').innerText = "Simulaciones - Nivel " + n;
                 const g = document.getElementById('simulations-grid');
                 g.innerHTML = '';
                 for(let i=1; i<=20; i++) {
-                    g.innerHTML += `
-                    <div style="background:#eee; padding:20px; border-radius:8px; text-align:center; border:1px solid #ddd; cursor:pointer;" onclick="alert('Próximamente: Simulación ${i}')">
-                        <strong>Simulación ${i}</strong>
-                    </div>`;
+                    g.innerHTML += `<div class="card-sim"><strong>Simulación ${i}</strong></div>`;
                 }
                 this.show('view-simulations');
             }
         };
 
-        // Iniciar la app
         app.renderDegrees();
     </script>
 </body>
