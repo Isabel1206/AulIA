@@ -83,149 +83,26 @@
             <div class="grid" id="subjects-grid"></div>
         </section>
 
-        <section id="view-units" class="hidden">
+        <section id="view-levels" class="hidden">
             <h2 id="subject-title" style="margin-bottom:20px; color:var(--primary)"></h2>
-            <p style="margin-bottom:20px;">Selecciona una Unidad Competencial para trabajar:</p>
-            <div class="grid" id="units-grid">
+            <div class="grid">
+                <div class="card">
+                    <h3>Nivel 1 (Fácil)</h3>
+                    <p>Casos guiados, menor complejidad.</p>
+                    <button class="btn" onclick="app.loadSimulations(1)">Acceder</button>
                 </div>
-        </section>
-
-        <section id="view-content" class="hidden">
-            <h2 id="unit-title" style="margin-bottom:20px; color:var(--primary)"></h2>
-            <div style="padding: 40px; background: #eee; border-radius: 12px; text-align: center; color: #666;">
-                <p><strong>Espacio de trabajo listo</strong></p>
-                <p>Aquí diseñaremos las actividades para esta Unidad Competencial.</p>
+                <div class="card">
+                    <h3>Nivel 2 (Intermedio)</h3>
+                    <p>Casos con más variables y decisiones.</p>
+                    <button class="btn" onclick="app.loadSimulations(2)">Acceder</button>
+                </div>
+                <div class="card">
+                    <h3>Nivel 3 (Difícil)</h3>
+                    <p>Casos complejos, dilemas y toma de decisiones avanzada.</p>
+                    <button class="btn" onclick="app.loadSimulations(3)">Acceder</button>
+                </div>
             </div>
         </section>
-    </div>
 
-    <script>
-        // DATOS DE LA PLATAFORMA
-        const data = {
-            degrees: [
-                { 
-                    id: '1', 
-                    title: 'Máster Universitario en Formación del Profesorado', 
-                    subjects: [
-                        {code:'01MSEC', name:'01MSEC_Aprendizaje y desarrollo de la personalidad'}, 
-                        {code:'03MSEC', name:'03MSEC_Sociedad, familia y educación'}
-                    ] 
-                },
-                { 
-                    id: '2', 
-                    title: 'Máster Universitario en Metodologías Activas y Digitales', 
-                    subjects: [
-                        {code:'02MADI', name:'02MADI_Habilidades Docentes Avanzadas para el Aprendizaje'}
-                    ] 
-                },
-                { 
-                    id: '3', 
-                    title: 'Grado Universitario en Educación Infantil', 
-                    subjects: [
-                        // Nombre ACTUALIZADO según tu última petición
-                        {code:'43GEIN', name:'43GEIN_04_A_2026-27_Dificultades en el aprendizaje, trastornos de la comunicación y TDA / hiperactividad'}, 
-                        {code:'8GEIN', name:'8GEIN_04_A_2026-27_Estimulación del lenguaje oral'}
-                    ] 
-                }
-            ]
-        };
-
-        // LÓGICA DE LA APLICACIÓN
-        const app = {
-            history: [], 
-
-            show(id) {
-                document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
-                document.getElementById(id).classList.remove('hidden');
-                
-                const bc = document.getElementById('breadcrumbs');
-                if (id === 'view-home') {
-                    bc.classList.add('hidden');
-                    this.history = [];
-                } else {
-                    bc.classList.remove('hidden');
-                    this.updateBreadcrumbs();
-                }
-            },
-
-            updateBreadcrumbs() {
-                const bc = document.getElementById('breadcrumbs');
-                let text = "Inicio";
-                if (this.history.length > 0) text += " > " + this.history[this.history.length-1];
-                bc.innerText = "< " + text;
-            },
-
-            goBack() {
-                this.renderDegrees();
-            },
-
-            renderDegrees() {
-                this.history = [];
-                const g = document.getElementById('degrees-grid');
-                g.innerHTML = '';
-                data.degrees.forEach(d => {
-                    g.innerHTML += `
-                    <div class="card">
-                        <h3>${d.title}</h3>
-                        <p>Accede a las asignaturas disponibles.</p>
-                        <button class="btn" onclick="app.loadDegree('${d.id}')">Ver Asignaturas</button>
-                    </div>`;
-                });
-                this.show('view-home');
-            },
-
-            loadDegree(id) {
-                const d = data.degrees.find(x => x.id === id);
-                this.history = [d.title]; 
-                
-                document.getElementById('degree-title').innerText = d.title;
-                const g = document.getElementById('subjects-grid');
-                g.innerHTML = '';
-                
-                d.subjects.forEach(s => {
-                    g.innerHTML += `
-                    <div class="card">
-                        <h3>${s.code}</h3>
-                        <p>${s.name}</p>
-                        <button class="btn" onclick="app.loadSubject('${s.name}')">Acceder</button>
-                    </div>`;
-                });
-                this.show('view-subjects');
-            },
-
-            loadSubject(fullName) {
-                this.history.push("Asignatura");
-                document.getElementById('subject-title').innerText = fullName;
-                
-                // Aquí definimos las Unidades Competenciales específicas que pediste
-                // (UC 2, 3 y 4)
-                const units = [2, 3, 4]; 
-                
-                const g = document.getElementById('units-grid');
-                g.innerHTML = '';
-                
-                units.forEach(u => {
-                    g.innerHTML += `
-                    <div class="card">
-                        <h3>Unidad Competencial ${u}</h3>
-                        <p>Accede a los contenidos de esta unidad.</p>
-                        <button class="btn" onclick="app.loadUnit(${u})">Entrar</button>
-                    </div>`;
-                });
-
-                this.show('view-units');
-            },
-
-            loadUnit(u) {
-                this.history.push("UC " + u);
-                document.getElementById('unit-title').innerText = "Unidad Competencial " + u;
-                // Dejamos la vista limpia, sin tarjetas de simulaciones antiguas
-                this.show('view-content');
-            }
-        };
-
-        // Iniciar la app
-        app.renderDegrees();
-    </script>
-</body>
-</html>
+        <section id="view-units" class="hidden">
+            <h2 id="unit-subject-title" style="margin-bottom:2
