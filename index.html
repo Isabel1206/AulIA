@@ -24,10 +24,8 @@
         .logo-img { max-width: 300px; height: auto; }
         .hero-desc { max-width: 700px; margin: 20px auto; font-size: 1.1rem; color: #555; }
 
-        /* Tarjetas y Grid */
+        /* Estilos generales Grid y Cards */
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; padding: 20px 0; }
-        
-        /* Grid especial para simulaciones pequeñas */
         .sim-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; padding: 20px 0; }
 
         .card { 
@@ -45,39 +43,42 @@
         .card h3 { color: var(--primary); margin-bottom: 10px; font-size: 1.2rem; }
         .card p { font-size: 0.95rem; color: #444; margin-bottom: 15px; }
 
-        /* Estilo para tarjetas de simulación (no accesibles aún) */
-        .card-sim {
+        /* Estilos específicos para los Casos */
+        .case-container {
             background: #fff;
-            border: 1px solid #ddd;
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            border-left: 5px solid var(--primary);
+        }
+        .case-text { font-size: 1.05rem; line-height: 1.6; color: #333; white-space: pre-line; }
+        .case-text ul { margin-left: 20px; margin-top: 10px; }
+        .case-text li { margin-bottom: 5px; }
+
+        /* Estilos de las Tareas y el Chat */
+        .task-block { margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px; }
+        .task-title { font-weight: bold; color: var(--primary); font-size: 1.1rem; margin-bottom: 10px; }
+        .task-desc { margin-bottom: 15px; color: #555; }
+
+        .chat-box {
+            background: #f0f8f8;
+            border: 1px solid #bce0e0;
             border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            color: #555;
-            cursor: default; /* Cursor normal para indicar que no es clicable */
+            padding: 15px;
+            margin-top: 15px;
         }
-        
-        /* Estilo especial para la tarjeta 21 (IA) */
-        .card-ia {
-            background: #e6fcfc;
-            border: 2px dashed var(--primary);
-            cursor: pointer;
-            color: var(--primary);
-            font-weight: bold;
-        }
+        .chat-header { font-weight: bold; color: #004d4d; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .chat-input-area { display: flex; gap: 10px; margin-top: 10px; }
+        .chat-input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+        .chat-btn { background: #004d4d; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; }
+
+        /* Estilos Simulaciones */
+        .card-sim { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 20px; text-align: center; color: #555; cursor: default; }
+        .card-ia { background: #e6fcfc; border: 2px dashed var(--primary); cursor: pointer; color: var(--primary); font-weight: bold; }
         .card-ia:hover { background: #d0f0f0; }
 
-        .btn { 
-            background: var(--primary); 
-            color: white; 
-            padding: 12px; 
-            border: none; 
-            border-radius: 6px; 
-            cursor: pointer; 
-            font-weight: 600;
-            width: 100%;
-            margin-top: auto; 
-        }
-
+        .btn { background: var(--primary); color: white; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; width: 100%; margin-top: auto; }
         .hidden { display: none; }
         .breadcrumbs { margin: 20px 0; color: var(--primary); cursor: pointer; font-size: 0.9rem; }
     </style>
@@ -99,10 +100,8 @@
     <div class="container">
         <div id="breadcrumbs" class="breadcrumbs hidden" onclick="app.goHome()"> Inicio </div>
         
-        <section id="view-home">
-            <div class="grid" id="degrees-grid"></div>
-        </section>
-
+        <section id="view-home"><div class="grid" id="degrees-grid"></div></section>
+        
         <section id="view-subjects" class="hidden">
             <h2 id="degree-title" style="margin-bottom:20px; color:var(--primary)"></h2>
             <div class="grid" id="subjects-grid"></div>
@@ -111,17 +110,16 @@
         <section id="view-levels" class="hidden">
             <h2 id="subject-title" style="margin-bottom:20px; color:var(--primary)"></h2>
             <div class="grid">
-                <div class="card"><h3>Nivel 1 (Fácil)</h3><button class="btn" onclick="app.loadSimulations(1)">Acceder</button></div>
-                <div class="card"><h3>Nivel 2 (Intermedio)</h3><button class="btn" onclick="app.loadSimulations(2)">Acceder</button></div>
-                <div class="card"><h3>Nivel 3 (Difícil)</h3><button class="btn" onclick="app.loadSimulations(3)">Acceder</button></div>
+                <div class="card"><h3>Nivel 1</h3><button class="btn" onclick="app.loadSimulations(1)">Acceder</button></div>
+                <div class="card"><h3>Nivel 2</h3><button class="btn" onclick="app.loadSimulations(2)">Acceder</button></div>
+                <div class="card"><h3>Nivel 3</h3><button class="btn" onclick="app.loadSimulations(3)">Acceder</button></div>
             </div>
         </section>
 
         <section id="view-units" class="hidden">
             <h2 id="unit-subject-title" style="margin-bottom:20px; color:var(--primary)"></h2>
             <p style="margin-bottom:20px;">Selecciona la Unidad Competencial:</p>
-            <div class="grid" id="units-grid">
-                </div>
+            <div class="grid" id="units-grid"></div>
         </section>
 
         <section id="view-uc3-menu" class="hidden">
@@ -129,13 +127,71 @@
             <div class="grid">
                 <div class="card">
                     <h3>Actividad de la Unidad Competencial 3</h3>
-                    <p>Espacio para el desarrollo de la actividad evaluable.</p>
-                    <button class="btn" onclick="alert('Espacio de actividad en construcción')">Acceder</button>
+                    <p>Resolución de casos prácticos evaluables.</p>
+                    <button class="btn" onclick="app.loadUC3ActivityMenu()">Acceder</button>
                 </div>
                 <div class="card">
                     <h3>Práctica con simulaciones</h3>
-                    <p>Entrenamiento práctico con diferentes niveles de dificultad.</p>
+                    <p>Entrenamiento práctico con diferentes niveles.</p>
                     <button class="btn" onclick="app.loadUC3PracticeLevels()">Acceder</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-uc3-cases-menu" class="hidden">
+            <h2 style="margin-bottom:20px; color:var(--primary)">Selección de Caso de Estudio</h2>
+            <div class="grid">
+                <div class="card"><h3>Caso de Marina</h3><button class="btn" onclick="app.loadCase('marina')">Acceder</button></div>
+                <div class="card"><h3>Caso de Anaís</h3><button class="btn" onclick="app.loadCase('anais')">Acceder</button></div>
+                <div class="card"><h3>Caso de Raúl</h3><button class="btn" onclick="app.loadCase('raul')">Acceder</button></div>
+                <div class="card"><h3>Caso de Ángel</h3><button class="btn" onclick="app.loadCase('angel')">Acceder</button></div>
+                <div class="card"><h3>Caso de Luís</h3><button class="btn" onclick="app.loadCase('luis')">Acceder</button></div>
+            </div>
+        </section>
+
+        <section id="view-uc3-case-detail" class="hidden">
+            <h2 id="case-title" style="margin-bottom:20px; color:var(--primary)"></h2>
+            
+            <div id="case-content" class="case-container"></div>
+
+            <div id="case-tasks">
+                <div class="task-block">
+                    <div class="task-title">TAREA 1: Identificación del trastorno</div>
+                    <p class="task-desc">Identificar el posible trastorno y subtipo para el caso, haciendo referencia a evidencias del texto. Argumenta la respuesta.</p>
+                    <div class="chat-box">
+                        <div class="chat-header">💬 ¡Hablemos!</div>
+                        <div style="font-size:0.9rem; color:#666; margin-bottom:10px;">Utiliza este chat para analizar el trastorno con la IA.</div>
+                        <div class="chat-input-area">
+                            <input type="text" class="chat-input" placeholder="Escribe aquí...">
+                            <button class="chat-btn">Enviar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="task-block">
+                    <div class="task-title">TAREA 2: Indicadores de riesgo</div>
+                    <p class="task-desc">Elaborar una lista con los indicadores de riesgo MÁS CARACTERÍSTICOS según el trastorno. Argumenta la respuesta (mínimo 6).</p>
+                    <div class="chat-box">
+                        <div class="chat-header">💬 ¡Hablemos!</div>
+                        <div style="font-size:0.9rem; color:#666; margin-bottom:10px;">Consulta o valida los indicadores con la IA.</div>
+                        <div class="chat-input-area">
+                            <input type="text" class="chat-input" placeholder="Escribe aquí...">
+                            <button class="chat-btn">Enviar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="task-block">
+                    <div class="task-title">TAREA 3: Propuesta de intervención</div>
+                    <p class="task-desc">Describir 2 actividades adecuadas para trabajar tempranamente los indicadores descritos. No es necesaria ficha completa. <br><strong>REQUISITO:</strong> Al menos una actividad debe ser inclusiva (para todo el grupo clase).</p>
+                    <div class="chat-box">
+                        <div class="chat-header">💬 ¡Hablemos!</div>
+                        <div style="font-size:0.9rem; color:#666; margin-bottom:10px;">Diseña las actividades con ayuda de la IA.</div>
+                        <div class="chat-input-area">
+                            <input type="text" class="chat-input" placeholder="Escribe aquí...">
+                            <button class="chat-btn">Enviar</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -143,28 +199,15 @@
         <section id="view-uc3-levels" class="hidden">
             <h2 style="margin-bottom:20px; color:var(--primary)">UC3 - Práctica con simulaciones</h2>
             <div class="grid">
-                <div class="card">
-                    <h3>Nivel 1 (Fácil)</h3>
-                    <p>Casos guiados, menor complejidad.</p>
-                    <button class="btn" onclick="app.loadUC3SimGrid(1)">Acceder</button>
-                </div>
-                <div class="card">
-                    <h3>Nivel 2 (Intermedio)</h3>
-                    <p>Casos con más variables y decisiones.</p>
-                    <button class="btn" onclick="app.loadUC3SimGrid(2)">Acceder</button>
-                </div>
-                <div class="card">
-                    <h3>Nivel 3 (Difícil)</h3>
-                    <p>Casos complejos, dilemas y toma de decisiones avanzada.</p>
-                    <button class="btn" onclick="app.loadUC3SimGrid(3)">Acceder</button>
-                </div>
+                <div class="card"><h3>Nivel 1 (Fácil)</h3><p>Casos guiados, menor complejidad.</p><button class="btn" onclick="app.loadUC3SimGrid(1)">Acceder</button></div>
+                <div class="card"><h3>Nivel 2 (Intermedio)</h3><p>Casos con más variables y decisiones.</p><button class="btn" onclick="app.loadUC3SimGrid(2)">Acceder</button></div>
+                <div class="card"><h3>Nivel 3 (Difícil)</h3><p>Casos complejos, dilemas.</p><button class="btn" onclick="app.loadUC3SimGrid(3)">Acceder</button></div>
             </div>
         </section>
 
         <section id="view-uc3-sims" class="hidden">
             <h2 id="uc3-sim-title" style="margin-bottom:20px; color:var(--primary)"></h2>
-            <div id="uc3-sim-grid" class="sim-grid">
-                </div>
+            <div id="uc3-sim-grid" class="sim-grid"></div>
         </section>
 
         <section id="view-simulations" class="hidden">
@@ -174,24 +217,56 @@
     </div>
 
     <script>
-        // DATOS
+        // CONTENIDO DE LOS CASOS
+        const casesData = {
+            marina: `
+                <strong>Antecedentes:</strong> Marina es una niña de 5 años que tiene una voz ligeramente grave en relación con su constitución y edad, y parece que realiza un gran esfuerzo vocal cuando habla.<br><br>
+                <strong>Observación:</strong> Le cuesta cantar y tiene dificultades para emitir sonidos agudos. Tiene también alteraciones fonatorias como "gallos", y en ocasiones produce sonidos inaudibles y muy forzados. Presenta una musculatura superior con un tono elevado, con rigidez.<br><br>
+                <strong>Factores:</strong> En cuanto a los factores predisponentes, es una niña que suele gritar, aunque no presenta afectaciones pulmonares ni un ambiente familiar excitado o excesivamente ruidoso.<br><br>
+                <strong>Informe Médico:</strong> El informe de la ORL mediante la fibroscopia nasolaríngea expone que se aprecian nódulos vocales.
+            `,
+            anais: `
+                <strong>Antecedentes:</strong> Anaïs es una niña de 5 años que presenta un lenguaje que la AL ha descrito como “infantilizado”.<br><br>
+                <strong>Alteraciones observadas:</strong>
+                <ul>
+                    <li>Seseo (sustitución de /c/ por /s/, por ejemplo, cigarro por sigarro, zapato por sapato).</li>
+                    <li>Rotacismo (sustitución del fonema /rr/ por /l/ o /r/, por ejemplo, ratón por latón, perro por, pero).</li>
+                    <li>Omisión del sonido /r/ a final de palabra, por ejemplo, collar por collá.</li>
+                    <li>Omisión del fonema /s/ en posición inversa, por ejemplo, espada por epada, escoba por ecoba, pastel por paté.</li>
+                    <li>Simplificación de sinfones vibrantes y líquidos y/o sustitución de sinfones vibrantes por líquidos, por ejemplo, globo por lobo, brazo por blazo, grifo por lifo, tren por tlen, pueblo por puebo, compra por coplá.</li>
+                    <li>Reducción de algunos sinfones a un solo elemento, por ejemplo, peine por pene, autobús por atobús.</li>
+                    <li>Coalescencia o asimilación de dos sonidos diferentes, por ejemplo, limón por mimón, luna por nuna, yema por nema.</li>
+                    <li>Omisión de consonantes en posición inversa.</li>
+                </ul>
+            `,
+            raul: `
+                <strong>Situación:</strong> Raúl, ¿Cuál es su caso? A continuación, se especifican las características:<br><br>
+                <strong>FONÉTICAMENTE:</strong> sabe y puede articular todos los fonemas menos la /r/ que sustituye por la /l/, los grupos vocálicos como /ei/ – /ai/ – /au/ – /eu/ – /oi/ – /iu/, los grupos consonánticos líquidos y vibrantes /pl/ – /pr/ – /bl/ – /br/ – /fl/ – /fr/ – /kl/ – /cr/ – /gr/ – /tr/ – /dr/, y los fonemas /s/ – /r/ – /l/ en posición inversa.<br><br>
+                <strong>FONOLÓGICAMENTE y CONCIENCIA FONOLÓGICA:</strong> encontramos diversos procesos fonológicos de simplificación del habla tales como procesos sustitutivos, procesos asimilatorios y procesos relativos a la estructura de la sílaba, según Laura Bosch (1983).<br>
+                Estos últimos concretamente son:
+                <ul>
+                    <li>Omisiones de consonantes finales (/lapiz/ por /lapi/, /vatio/ por /vati/).</li>
+                    <li>Omisión de consonantes iniciales (/nube/ por /ube/).</li>
+                    <li>Omisión de sílabas átonas iniciales (/escoba/ por /coba/).</li>
+                    <li>Metátesis o inversión de una secuencia (/limón/ por /milón/, /yema/ por /meya/, /celular/ por /felular/, /llave/ por /valle/).</li>
+                    <li>Omisión del sonido /r/ a final de palabra, por ejemplo /collar/ por /collá/.</li>
+                </ul>
+            `,
+            angel: `
+                <strong>Relato del alumno:</strong> “Hola mi nombrle es Ángel y teno chinco años… mis maestlas piensan que hablo así, ¡¡que ponque estoy mimado!!”<br><br>
+                <strong>Información familiar:</strong> Su padre nos dice que tiene una malformación del frenillo lingual. Éste es demasiado corto. Lo que le dificulta pronunciar ciertos fonemas.
+            `,
+            luis: `
+                <strong>Relato del alumno:</strong> “Hooollaaa mii nooombreee eess Luuuíísss yy vvooyy cccaaammiinnnoo aa ccaassa. Ooos nneeeccssiitto pppooorrrqqquuueee mmuucchhaaa ggeeennnttee ssee rrííe ddee mii cccuannndooo hhhabblloo. Pporrr eessoo hhhayy vveeecess qqquuee dddeeecciiiddoo qquuuee mmejjooorr nnnoo hhaaccerlo.”<br><br>
+                <strong>Información familiar:</strong> Su madre nos dice que Luís tiende a ser lento en el habla, su tono es bajo y monótono, y muestra debilidad y espasticidad en un lado del cuerpo, lengua y labios.
+            `
+        };
+
         const data = {
             degrees: [
-                { 
-                    id: '1', title: 'Máster Universitario en Formación del Profesorado', 
-                    subjects: [{code:'01MSEC', name:'01MSEC_Aprendizaje y desarrollo de la personalidad'}, {code:'03MSEC', name:'03MSEC_Sociedad, familia y educación'}] 
-                },
-                { 
-                    id: '2', title: 'Máster Universitario en Metodologías Activas y Digitales', 
-                    subjects: [{code:'02MADI', name:'02MADI_Habilidades Docentes Avanzadas para el Aprendizaje'}] 
-                },
-                { 
-                    id: '3', title: 'Grado Universitario en Educación Infantil', 
-                    subjects: [
-                        {code:'43GEIN', name:'43GEIN_04_A_2026-27_Dificultades en el aprendizaje, trastornos de la comunicación y TDA / hiperactividad'}, 
-                        {code:'8GEIN', name:'8GEIN_04_A_2026-27_Estimulación del lenguaje oral'}
-                    ] 
-                }
+                { id: '1', title: 'Máster Universitario en Formación del Profesorado', subjects: [{code:'01MSEC', name:'01MSEC_Aprendizaje y desarrollo de la personalidad'}, {code:'03MSEC', name:'03MSEC_Sociedad, familia y educación'}] },
+                { id: '2', title: 'Máster Universitario en Metodologías Activas y Digitales', subjects: [{code:'02MADI', name:'02MADI_Habilidades Docentes Avanzadas para el Aprendizaje'}] },
+                { id: '3', title: 'Grado Universitario en Educación Infantil', subjects: [{code:'43GEIN', name:'43GEIN_04_A_2026-27_Dificultades en el aprendizaje, trastornos de la comunicación y TDA / hiperactividad'}, {code:'8GEIN', name:'8GEIN_04_A_2026-27_Estimulación del lenguaje oral'}] }
             ]
         };
 
@@ -201,7 +276,6 @@
             show(id) {
                 document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
                 document.getElementById(id).classList.remove('hidden');
-                
                 const bc = document.getElementById('breadcrumbs');
                 if (id === 'view-home') {
                     bc.classList.add('hidden');
@@ -219,21 +293,14 @@
                 bc.innerText = "< " + text;
             },
 
-            goHome() {
-                this.renderDegrees();
-            },
+            goHome() { this.renderDegrees(); },
 
             renderDegrees() {
                 this.history = [];
                 const g = document.getElementById('degrees-grid');
                 g.innerHTML = '';
                 data.degrees.forEach(d => {
-                    g.innerHTML += `
-                    <div class="card">
-                        <h3>${d.title}</h3>
-                        <p>Accede a las asignaturas disponibles.</p>
-                        <button class="btn" onclick="app.loadDegree('${d.id}')">Ver Asignaturas</button>
-                    </div>`;
+                    g.innerHTML += `<div class="card"><h3>${d.title}</h3><p>Accede a las asignaturas disponibles.</p><button class="btn" onclick="app.loadDegree('${d.id}')">Ver Asignaturas</button></div>`;
                 });
                 this.show('view-home');
             },
@@ -245,12 +312,7 @@
                 const g = document.getElementById('subjects-grid');
                 g.innerHTML = '';
                 d.subjects.forEach(s => {
-                    g.innerHTML += `
-                    <div class="card">
-                        <h3>${s.code}</h3>
-                        <p>${s.name}</p>
-                        <button class="btn" onclick="app.loadSubject('${s.name}')">Acceder</button>
-                    </div>`;
+                    g.innerHTML += `<div class="card"><h3>${s.code}</h3><p>${s.name}</p><button class="btn" onclick="app.loadSubject('${s.name}')">Acceder</button></div>`;
                 });
                 this.show('view-subjects');
             },
@@ -258,27 +320,13 @@
             loadSubject(fullName) {
                 this.history.push("Asignatura");
                 const especialSubject = '43GEIN_04_A_2026-27_Dificultades en el aprendizaje, trastornos de la comunicación y TDA / hiperactividad';
-
                 if (fullName === especialSubject) {
                     document.getElementById('unit-subject-title').innerText = fullName;
-                    // Renderizamos las unidades específicas
                     const g = document.getElementById('units-grid');
                     g.innerHTML = '';
-                    
-                    // UC 2
                     g.innerHTML += `<div class="card"><h3>Unidad Competencial 2</h3><button class="btn" onclick="alert('Próximamente')">Entrar</button></div>`;
-                    
-                    // UC 3 (LA IMPORTANTE)
-                    g.innerHTML += `
-                    <div class="card">
-                        <h3>Unidad Competencial 3</h3>
-                        <p>Acceso a Actividades y Simulaciones.</p>
-                        <button class="btn" onclick="app.loadUC3Menu()">Entrar</button>
-                    </div>`;
-                    
-                    // UC 4
+                    g.innerHTML += `<div class="card"><h3>Unidad Competencial 3</h3><p>Acceso a Actividades y Simulaciones.</p><button class="btn" onclick="app.loadUC3Menu()">Entrar</button></div>`;
                     g.innerHTML += `<div class="card"><h3>Unidad Competencial 4</h3><button class="btn" onclick="alert('Próximamente')">Entrar</button></div>`;
-                    
                     this.show('view-units');
                 } else {
                     document.getElementById('subject-title').innerText = fullName;
@@ -286,11 +334,31 @@
                 }
             },
 
-            // --- LÓGICA ESPECÍFICA PARA UC3 ---
-
             loadUC3Menu() {
                 this.history.push("UC3");
                 this.show('view-uc3-menu');
+            },
+
+            loadUC3ActivityMenu() {
+                this.history.push("Actividad");
+                this.show('view-uc3-cases-menu');
+            },
+
+            loadCase(caseKey) {
+                // Mapeo de nombres legibles para el historial
+                const names = {
+                    marina: "Caso de Marina", anais: "Caso de Anaís", raul: "Caso de Raúl", angel: "Caso de Ángel", luis: "Caso de Luís"
+                };
+                
+                this.history.push(names[caseKey]);
+                document.getElementById('case-title').innerText = names[caseKey];
+                
+                // Inyectar el contenido HTML específico del caso
+                document.getElementById('case-content').innerHTML = `
+                    <div class="case-text">${casesData[caseKey]}</div>
+                `;
+                
+                this.show('view-uc3-case-detail');
             },
 
             loadUC3PracticeLevels() {
@@ -301,29 +369,15 @@
             loadUC3SimGrid(level) {
                 this.history.push("Nivel " + level);
                 document.getElementById('uc3-sim-title').innerText = "UC3 - Práctica - Nivel " + level;
-                
                 const g = document.getElementById('uc3-sim-grid');
                 g.innerHTML = '';
-
-                // Crear 20 tarjetas NO accesibles
                 for(let i=1; i<=20; i++) {
-                    g.innerHTML += `
-                    <div class="card-sim">
-                        <strong>Simulación ${i}</strong>
-                    </div>`;
+                    g.innerHTML += `<div class="card-sim"><strong>Simulación ${i}</strong></div>`;
                 }
-
-                // Crear tarjeta 21 (IA)
-                g.innerHTML += `
-                <div class="card-sim card-ia" onclick="alert('Generando nueva simulación con IA...')">
-                    <strong>+ Acceso a más simulaciones generadas por IA</strong>
-                </div>`;
-
+                g.innerHTML += `<div class="card-sim card-ia" onclick="alert('Generando nueva simulación con IA...')"><strong>+ Acceso a más simulaciones generadas por IA</strong></div>`;
                 this.show('view-uc3-sims');
             },
 
-            // --- LÓGICA ESTÁNDAR (Otras asignaturas) ---
-            
             loadSimulations(n) {
                 this.history.push("Nivel " + n);
                 document.getElementById('level-title').innerText = "Simulaciones - Nivel " + n;
