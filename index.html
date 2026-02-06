@@ -7,7 +7,7 @@
     <style>
         :root {
             --primary: #006A6A;
-            --bg-color: #FFFFFF; /* Fondo blanco pedido */
+            --bg-color: #FFFFFF;
             --card-bg: #F8F9FA;
             --text-main: #212529;
             --radius: 12px;
@@ -28,14 +28,14 @@
         }
 
         .logo-img {
-            max-width: 300px; /* Tamaño del logo */
+            max-width: 300px;
             height: auto;
         }
 
         .hero-desc { max-width: 700px; margin: 20px auto; font-size: 1.1rem; color: #555; }
 
         /* Tarjetas y Grid */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; padding: 20px 0; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; padding: 20px 0; }
         .card { 
             background: var(--card-bg); 
             padding: 30px; 
@@ -48,6 +48,10 @@
         }
         .card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
         
+        /* Títulos dentro de las tarjetas */
+        .card h3 { color: var(--primary); margin-bottom: 10px; font-size: 1.2rem; }
+        .card p { font-size: 0.95rem; color: #444; margin-bottom: 15px; }
+
         .btn { 
             background: var(--primary); 
             color: white; 
@@ -57,7 +61,7 @@
             cursor: pointer; 
             font-weight: 600;
             width: 100%;
-            margin-top: 20px;
+            margin-top: auto; /* Empuja el botón al final */
         }
 
         .hidden { display: none; }
@@ -69,7 +73,8 @@
     <header>
         <div class="container">
             <div class="logo-container">
-                <img src="logo.png" alt="Logo AulIA" class="logo-img" onerror="alert('Error: No se encuentra el archivo logo.png en esta carpeta')">
+                <img src="logo.png" alt="Logo AulIA" class="logo-img" onerror="this.style.display='none'; document.getElementById('alt-logo').style.display='block'">
+                <h1 id="alt-logo" style="display:none; color:var(--primary); font-size:2.5rem;">AulIA</h1>
             </div>
             <p class="hero-desc">
                 Plataforma de simulaciones educativas basada en IA generativa. Practica la toma de decisiones y la reflexión docente en entornos profesionales seguros.
@@ -78,7 +83,7 @@
     </header>
 
     <div class="container">
-        <div id="breadcrumbs" class="breadcrumbs hidden" onclick="app.goHome()"> Inicio > Volver </div>
+        <div id="breadcrumbs" class="breadcrumbs hidden" onclick="app.goBack()"> Inicio </div>
         
         <section id="view-home">
             <div class="grid" id="degrees-grid"></div>
@@ -92,65 +97,152 @@
         <section id="view-levels" class="hidden">
             <h2 id="subject-title" style="margin-bottom:20px; color:var(--primary)"></h2>
             <div class="grid">
-                <div class="card"><h3>Nivel 1 (Fácil)</h3><button class="btn" onclick="app.loadSimulations(1)">Acceder</button></div>
-                <div class="card"><h3>Nivel 2 (Intermedio)</h3><button class="btn" onclick="app.loadSimulations(2)">Acceder</button></div>
-                <div class="card"><h3>Nivel 3 (Difícil)</h3><button class="btn" onclick="app.loadSimulations(3)">Acceder</button></div>
+                <div class="card">
+                    <h3>Nivel 1 (Fácil)</h3>
+                    <p>Casos guiados, menor complejidad.</p>
+                    <button class="btn" onclick="app.loadSimulations(1)">Acceder</button>
+                </div>
+                <div class="card">
+                    <h3>Nivel 2 (Intermedio)</h3>
+                    <p>Casos con más variables y decisiones.</p>
+                    <button class="btn" onclick="app.loadSimulations(2)">Acceder</button>
+                </div>
+                <div class="card">
+                    <h3>Nivel 3 (Difícil)</h3>
+                    <p>Casos complejos, dilemas y toma de decisiones avanzada.</p>
+                    <button class="btn" onclick="app.loadSimulations(3)">Acceder</button>
+                </div>
             </div>
         </section>
 
         <section id="view-simulations" class="hidden">
             <h2 id="level-title" style="margin-bottom:20px; color:var(--primary)"></h2>
-            <div id="simulations-grid" style="display:grid; grid-template-columns: repeat(5, 1fr); gap:10px;"></div>
+            <p style="margin-bottom:20px;">Selecciona una simulación para comenzar:</p>
+            <div id="simulations-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap:15px;"></div>
         </section>
     </div>
 
     <script>
+        // DATOS DE LA PLATAFORMA (Estructura actualizada)
         const data = {
             degrees: [
-                { id: '1', title: 'Máster Formación del Profesorado', subjects: [{code:'01MSEC', name:'Aprendizaje'}, {code:'03MSEC', name:'Sociedad'}] },
-                { id: '2', title: 'Máster Metodologías Activas', subjects: [{code:'02MADI', name:'Habilidades'}] },
-                { id: '3', title: 'Grado Educación Infantil', subjects: [{code:'43GEIN', name:'Dificultades'}, {code:'8GEIN', name:'Lenguaje'}] },
-                { id: '4', title: 'Grado Educación Primaria', subjects: [{code:'05GEPR', name:'Familia y Escuela'}] }
+                { 
+                    id: '1', 
+                    title: 'Máster Universitario en Formación del Profesorado', 
+                    subjects: [
+                        {code:'01MSEC', name:'01MSEC_Aprendizaje y desarrollo de la personalidad'}, 
+                        {code:'03MSEC', name:'03MSEC_Sociedad, familia y educación'}
+                    ] 
+                },
+                { 
+                    id: '2', 
+                    title: 'Máster Universitario en Metodologías Activas y Digitales', 
+                    subjects: [
+                        {code:'02MADI', name:'02MADI_Habilidades Docentes Avanzadas para el Aprendizaje'}
+                    ] 
+                },
+                { 
+                    id: '3', 
+                    title: 'Grado Universitario en Educación Infantil', 
+                    subjects: [
+                        {code:'43GEIN', name:'43GEIN_10_A_2025-26_Dificultades en el aprendizaje, trastornos de la comunicación y TDA / hiperactividad'}, 
+                        {code:'8GEIN', name:'8GEIN_04_A_2026-27_Estimulación del lenguaje oral'}
+                    ] 
+                }
+                // Grado Primaria ELIMINADO
             ]
         };
 
+        // LÓGICA DE LA APLICACIÓN
         const app = {
+            history: [], // Para controlar la navegación hacia atrás
+
             show(id) {
                 document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
                 document.getElementById(id).classList.remove('hidden');
-                document.getElementById('breadcrumbs').classList.toggle('hidden', id === 'view-home');
+                
+                // Actualizar breadcrumbs
+                const bc = document.getElementById('breadcrumbs');
+                if (id === 'view-home') {
+                    bc.classList.add('hidden');
+                    this.history = [];
+                } else {
+                    bc.classList.remove('hidden');
+                    this.updateBreadcrumbs();
+                }
             },
+
+            updateBreadcrumbs() {
+                const bc = document.getElementById('breadcrumbs');
+                let text = "Inicio";
+                // Lógica simple de migas de pan basada en el historial
+                if (this.history.length > 0) text += " > " + this.history[this.history.length-1];
+                bc.innerText = "< " + text;
+            },
+
+            goBack() {
+                // Sistema simple para volver siempre al inicio por seguridad
+                this.renderDegrees();
+            },
+
             renderDegrees() {
+                this.history = [];
                 const g = document.getElementById('degrees-grid');
                 g.innerHTML = '';
                 data.degrees.forEach(d => {
-                    g.innerHTML += `<div class="card"><h3>${d.title}</h3><button class="btn" onclick="app.loadDegree('${d.id}')">Ver Asignaturas</button></div>`;
+                    g.innerHTML += `
+                    <div class="card">
+                        <h3>${d.title}</h3>
+                        <p>Accede a las asignaturas disponibles.</p>
+                        <button class="btn" onclick="app.loadDegree('${d.id}')">Ver Asignaturas</button>
+                    </div>`;
                 });
                 this.show('view-home');
             },
+
             loadDegree(id) {
                 const d = data.degrees.find(x => x.id === id);
+                this.history = [d.title]; 
+                
                 document.getElementById('degree-title').innerText = d.title;
                 const g = document.getElementById('subjects-grid');
                 g.innerHTML = '';
+                
                 d.subjects.forEach(s => {
-                    g.innerHTML += `<div class="card"><h3>${s.code}</h3><p>${s.name}</p><button class="btn" onclick="app.loadSubject('${s.code}', '${s.name}')">Acceder</button></div>`;
+                    // Mostramos el código corto en el título y el nombre largo en el texto
+                    g.innerHTML += `
+                    <div class="card">
+                        <h3>${s.code}</h3>
+                        <p>${s.name}</p>
+                        <button class="btn" onclick="app.loadSubject('${s.name}')">Acceder</button>
+                    </div>`;
                 });
                 this.show('view-subjects');
             },
-            loadSubject(code, name) {
-                document.getElementById('subject-title').innerText = code + " - " + name;
+
+            loadSubject(fullName) {
+                this.history.push("Asignatura");
+                document.getElementById('subject-title').innerText = fullName;
                 this.show('view-levels');
             },
+
             loadSimulations(n) {
+                this.history.push("Nivel " + n);
                 document.getElementById('level-title').innerText = "Simulaciones - Nivel " + n;
                 const g = document.getElementById('simulations-grid');
                 g.innerHTML = '';
-                for(let i=1; i<=20; i++) g.innerHTML += `<div style="background:#eee; padding:20px; border-radius:8px; text-align:center">Sim ${i}</div>`;
+                // Generar 20 placeholders
+                for(let i=1; i<=20; i++) {
+                    g.innerHTML += `
+                    <div style="background:#eee; padding:20px; border-radius:8px; text-align:center; border:1px solid #ddd; cursor:pointer;" onclick="alert('Próximamente: Simulación ${i}')">
+                        <strong>Simulación ${i}</strong>
+                    </div>`;
+                }
                 this.show('view-simulations');
-            },
-            goHome() { this.renderDegrees(); }
+            }
         };
+
+        // Iniciar la app
         app.renderDegrees();
     </script>
 </body>
