@@ -178,6 +178,22 @@
             <div id="simulations-grid" class="sim-grid"></div>
         </section>
 
+        <section id="view-gein-uc4" class="hidden">
+            <h2 style="margin-bottom:20px; color:var(--primary)">08 GEIN - Unidad Competencial 4</h2>
+             <div class="grid">
+                <div class="card">
+                    <h3>Simulaciones UC4</h3>
+                    <p>Entrenamiento en estimulación del lenguaje oral.</p>
+                    <button class="btn" onclick="app.loadGeinSimGrid()">Acceder</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-gein-sims" class="hidden">
+             <h2 style="margin-bottom:20px; color:var(--primary)">08 GEIN - Simulaciones UC4</h2>
+            <div id="gein-sim-grid" class="sim-grid"></div>
+        </section>
+
         <section id="view-msec-ua" class="hidden">
             <h2 style="margin-bottom:20px; color:#D81B60;">01MSEC: Unidades de Aprendizaje</h2>
             <div class="grid">
@@ -314,7 +330,6 @@
             return responseHTML;
         }
 
-        // DATOS DE LOS CASOS 43 GEIN COMPLETOS (RESTAURADOS)
         const casesData = {
             marina: `
                 <h3>Caso de Marina (5 años) - Trastorno de la Voz</h3>
@@ -391,67 +406,127 @@
         ];
 
         // =================================================================
-        // 2. NUEVA IMPLEMENTACIÓN 01 MSEC (MÁSTER - IA INTELIGENTE)
+        // 2. NUEVA IMPLEMENTACIÓN 01 MSEC (MÁSTER - IA INTELIGENTE y CONTENIDO EXPANDIDO)
         // =================================================================
         
+        // Función auxiliar para generar 20 simulaciones variadas
+        function generateMsecSims(uaPrefix, uaTopic, theoryContext) {
+            const sims = [];
+            const contexts = ["IES Urbano", "Colegio Rural Agrupado", "Centro de Educación Especial", "Instituto de FP Básica", "Colegio Bilingüe de Élite"];
+            const students = ["Marcos", "Lucía", "Ahmed", "Sofía", "Javier", "Elena", "Pablo", "Noa", "David", "Carmen"];
+            
+            for (let i = 1; i <= 20; i++) {
+                const ctx = contexts[i % contexts.length];
+                const stu = students[i % students.length];
+                let specificProblem = "";
+                let specificSolution = "";
+
+                if (uaTopic.includes("Conceptos")) {
+                    specificProblem = `Muestra una actitud ${i % 2 === 0 ? "impulsiva y reactiva (temperamento)" : "desorganizada pero modificable (carácter)"}.`;
+                    specificSolution = `Diferenciar si la conducta es biológica (temperamento, difícil cambio) o aprendida (carácter, educable). Aplicar pautas de ${i % 2 === 0 ? "autocontrol emocional" : "reestructuración de hábitos"}.`;
+                } else if (uaTopic.includes("Desarrollo")) {
+                    specificProblem = `Está atravesando la etapa de ${i % 2 === 0 ? "Identidad vs Confusión" : "Industria vs Inferioridad"} y muestra rechazo a la autoridad.`;
+                    specificSolution = `Entender la crisis como normativa según Erikson. No confrontar frontalmente, sino ofrecer espacios de autonomía y escucha activa.`;
+                } else {
+                    specificProblem = `No conecta con la explicación del profesor sobre ${i % 2 === 0 ? "conceptos abstractos" : "procedimientos complejos"}.`;
+                    specificSolution = `Aplicar la ZDP de Vygotsky: rebajar la exigencia inicial y ofrecer andamiaje (ayudas visuales o guía de pares) hasta que pueda hacerlo solo.`;
+                }
+
+                sims.push({
+                    id: `${uaPrefix}-sim${i}`,
+                    title: `Simulación ${i}: ${stu} en ${ctx}`,
+                    content: `
+                        <strong>Contexto:</strong> ${ctx}.<br>
+                        <strong>Alumno:</strong> ${stu}, ${12 + (i%5)} años.<br>
+                        <strong>Situación:</strong> ${specificProblem} El docente no sabe si intervenir disciplinariamente o pedagógicamente.<br>
+                        <strong>Teoría Clave:</strong> ${theoryContext}.
+                    `,
+                    solution: specificSolution
+                });
+            }
+            return sims;
+        }
+
         const msecData = {
             UA1: {
                 title: "UA1. Conceptos previos",
-                theory: "Evidencias UA1: Allport define personalidad como organización dinámica. Temperamento es biológico, Carácter es adquirido.",
-                sims: Array.from({length: 20}, (_, i) => ({
-                    id: `ua1-sim${i+1}`,
-                    title: `Simulación ${i+1}: Temperamento vs Carácter`,
-                    content: `<strong>Caso:</strong> Un alumno de 3º ESO reacciona impulsivamente (temperamento) pero luego reflexiona (carácter). <br><strong>Dilema:</strong> ¿Cómo gestionar su impulsividad sin anular su personalidad?`,
-                    solution: "La respuesta ideal debe diferenciar que el temperamento no se elige, pero el carácter se educa. La intervención debe enfocarse en técnicas de autocontrol (carácter) sin castigar la emoción primaria (temperamento)."
-                }))
+                theory: "Evidencias UA1: Allport (Personalidad), Temperamento vs Carácter.",
+                sims: generateMsecSims("ua1", "Conceptos previos", "Allport: Personalidad = Organización dinámica")
             },
             UA2: {
                 title: "UA2. Desarrollo psicológico",
-                theory: "Evidencias UA2: Erikson (Identidad vs Confusión). Piaget (Pensamiento formal abstracto).",
-                sims: Array.from({length: 20}, (_, i) => ({
-                    id: `ua2-sim${i+1}`,
-                    title: `Simulación ${i+1}: Crisis de Identidad`,
-                    content: `<strong>Caso:</strong> Alumna cambia radicalmente de estilo y grupo de amigos. Baja rendimiento. <br><strong>Pregunta:</strong> ¿Es patológico o normativo según Erikson?`,
-                    solution: "Según Erikson, la crisis de identidad en la adolescencia es normativa y necesaria. No se debe patologizar, sino acompañar. El docente debe ser un referente estable y comprensivo."
-                }))
+                theory: "Evidencias UA2: Erikson (Etapas vitales), Piaget (Cognición).",
+                sims: generateMsecSims("ua2", "Desarrollo psicológico", "Erikson: Crisis normativas del desarrollo")
             },
             UA3: {
                 title: "UA3. Proceso E-A",
-                theory: "Evidencias UA3: Vygotsky (ZDP), Ausubel (Aprendizaje Significativo).",
-                sims: Array.from({length: 20}, (_, i) => ({
-                    id: `ua3-sim${i+1}`,
-                    title: `Simulación ${i+1}: Falta de motivación`,
-                    content: `<strong>Caso:</strong> El profesor explica sin conectar con los alumnos. <br><strong>Reto:</strong> Aplica el Aprendizaje Significativo de Ausubel.`,
-                    solution: "Para lograr aprendizaje significativo, debes conectar el nuevo contenido con los conocimientos previos del alumno (anclaje). Si no hay conexión, el aprendizaje es mecánico y se olvida."
-                }))
+                theory: "Evidencias UA3: Vygotsky (ZDP), Ausubel (Significatividad).",
+                sims: generateMsecSims("ua3", "Proceso E-A", "Vygotsky: Zona de Desarrollo Próximo y Andamiaje")
             }
         };
 
         const msecBrain = {
+            sessions: {}, // Memoria por sesión
+            
+            getSession(simId) {
+                if (!this.sessions[simId]) {
+                    this.sessions[simId] = { 
+                        lastContext: null, // Para recordar qué se acaba de decir
+                        history: [] 
+                    };
+                }
+                return this.sessions[simId];
+            },
+
             process(simId, uaKey, userText) {
                 const text = normText(userText);
-                const sim = msecData[uaKey].sims.find(s => s.id === simId);
-                
-                // 1. Detección de petición de ayuda (IA Inteligente/Empática)
-                if (hasAny(text, ["no se", "no lo se", "ayuda", "dime la respuesta", "solucion", "no entiendo", "me rindo"])) {
-                    return `🤖 <b>Asistente IA:</b> ¡No te preocupes! Es normal tener dudas. Estamos aquí para aprender.<br><br>
-                            💡 <b>La solución pedagógica es esta:</b><br>
-                            ${sim.solution}<br><br>
-                            Intenta ahora reformularlo con tus propias palabras.`;
-                }
-
-                // 2. Evaluación normal (estilo NotebookLM)
+                const sim = msecData[uaKey].sims.find(s => s.id === simId) || { solution: "Solución generada dinámicamente..." };
+                const session = this.getSession(simId);
                 let response = "";
-                const theory = msecData[uaKey].theory;
-                
-                if (hasAny(text, ["temperamento", "caracter", "erikson", "piaget", "vygotsky", "ausubel", "identidad"])) {
-                     response += "✅ <b>Muy bien fundamentado.</b> Has usado conceptos clave de la unidad.<br>";
-                     response += `📖 <b>Referencia:</b> ${theory}`;
-                } else {
-                     response += "🤔 Tu respuesta tiene sentido común, pero necesitamos usar el vocabulario técnico del Máster. <br>";
-                     response += "¿Podrías intentar relacionarlo con la teoría de la Unidad? (Si no sabes cómo, pídele ayuda a la IA).";
+
+                // 1. Detección de petición de ayuda / No saber (IA Inteligente/Empática)
+                if (hasAny(text, ["no se", "no lo se", "ni idea", "ayuda", "dime la respuesta", "solucion", "no entiendo", "me rindo", "cual es"])) {
+                    response = `🤖 <b>Asistente IA:</b> Entiendo que este caso puede ser complejo. No te preocupes, analicémoslo juntos.<br><br>
+                            💡 <b>La solución pedagógica recomendada es:</b><br>
+                            "${sim.solution}"<br><br>
+                            ¿Qué te parece este enfoque? ¿Crees que sería aplicable en tu contexto real?`;
+                    session.lastContext = "solution_given"; // Marcamos que acabamos de dar la solución
+                } 
+                // 2. Chat Conversacional (Preguntas sobre la respuesta anterior)
+                else if (session.lastContext === "solution_given" && hasAny(text, ["por que", "seguro", "explica mas", "no estoy de acuerdo", "y si", "pero"])) {
+                     response = `💬 <b>Profundizando:</b> Me preguntas sobre la solución anterior. <br>
+                     La justificamos porque la teoría de esta Unidad sugiere que intervenir sobre la causa raíz (sea temperamento, desarrollo o ZDP) es más efectivo que solo corregir la conducta visible. <br>
+                     ¿Se te ocurre alguna alternativa a lo que propuse?`;
                 }
+                // 3. Evaluación normal (estilo NotebookLM)
+                else {
+                    const theory = msecData[uaKey].theory;
+                    if (hasAny(text, ["temperamento", "caracter", "erikson", "piaget", "vygotsky", "ausubel", "identidad", "zdp", "andamiaje"])) {
+                        response = "✅ <b>Muy bien fundamentado.</b> Has usado conceptos clave de la unidad y los has aplicado al problema del alumno.<br>";
+                        response += `📖 <b>Referencia:</b> ${theory}. <br>¿Hay algún otro factor del entorno que considerarías?`;
+                        session.lastContext = "good_answer";
+                    } else {
+                        response = "🤔 Tu respuesta es razonable, pero para aprobar el Máster necesitamos usar vocabulario técnico. <br>";
+                        response += "¿Podrías reformularlo usando alguno de los autores de la Unidad (Allport, Erikson, Vygotsky...)? Si no recuerdas la teoría, dímelo y te ayudo.";
+                        session.lastContext = "vague_answer";
+                    }
+                }
+                
                 return response;
+            }
+        };
+
+        // Generador de simulaciones nuevas (Tarjeta accesible "Más simulaciones")
+        const msecGenerator = {
+            generate(uaKey) {
+                const problems = ["Disrupción en el aula", "Apatía total", "Conflicto con compañeros", "Falta de comprensión lectora", "Altas capacidades no detectadas"];
+                const prob = problems[Math.floor(Math.random() * problems.length)];
+                return {
+                    id: `gen-${Date.now()}`,
+                    title: `Caso Generado por IA: ${prob}`,
+                    content: `<strong>Caso Nuevo:</strong> Se presenta una situación de ${prob} en un contexto aleatorio. <br><strong>Reto:</strong> Aplica la teoría de ${msecData[uaKey].theory} para resolverlo.`,
+                    solution: `La solución a "${prob}" requiere un análisis individualizado. Generalmente, deberías evaluar primero las necesidades del alumno y luego adaptar la metodología.`
+                };
             }
         };
 
@@ -461,33 +536,35 @@
         const data = {
             degrees: [
                 { id: '1', title: 'Máster Universitario en Formación del Profesorado', subjects: [{code:'01MSEC', name:'01MSEC_Aprendizaje y desarrollo de la personalidad'}] },
-                { id: '3', title: 'Grado Universitario en Educación Infantil', subjects: [{code:'43GEIN', name:'43GEIN_04_A_2026-27_Dificultades en el aprendizaje, trastornos de la comunicación y TDA / hiperactividad'}] }
+                { 
+                    id: '3', 
+                    title: 'Grado Universitario en Educación Infantil', 
+                    subjects: [
+                        {code:'43GEIN', name:'43GEIN_04_A_2026-27_Dificultades en el aprendizaje, trastornos de la comunicación y TDA / hiperactividad'},
+                        {code:'08GEIN', name:'08GEIN_Estimulación del Lenguaje Oral'} // Añadida 08 GEIN
+                    ] 
+                }
             ]
         };
 
         const app = {
-            viewStack: [], // Pila para el botón "Volver"
+            viewStack: [], 
             currentMsecUA: null,
             currentMsecSim: null,
 
             show(id) {
-                // Ocultar todo
                 document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
-                // Mostrar actual
                 document.getElementById(id).classList.remove('hidden');
                 
-                // Gestión de Breadcrumbs y Botón Volver
                 const bc = document.getElementById('breadcrumbs');
                 if (id === 'view-home') {
                     bc.classList.add('hidden');
-                    this.viewStack = []; // Reset pila en inicio
+                    this.viewStack = [];
                 } else {
                     bc.classList.remove('hidden');
-                    // Actualizar texto del breadcrumb (simple)
                     document.getElementById('breadcrumb-text').innerText = ""; 
                 }
 
-                // Añadir a la pila si es una navegación nueva (no si venimos de goBack)
                 if (this.isGoingBack) {
                     this.isGoingBack = false;
                 } else {
@@ -497,15 +574,13 @@
                 }
             },
 
-            goHome() {
-                this.show('view-home');
-            },
+            goHome() { this.show('view-home'); },
 
             goBack() {
                 if (this.viewStack.length > 1) {
-                    this.viewStack.pop(); // Quitar actual
-                    const prev = this.viewStack[this.viewStack.length - 1]; // Ver anterior
-                    this.isGoingBack = true; // Flag para no duplicar en pila
+                    this.viewStack.pop(); 
+                    const prev = this.viewStack[this.viewStack.length - 1]; 
+                    this.isGoingBack = true; 
                     this.show(prev);
                 } else {
                     this.goHome();
@@ -545,9 +620,28 @@
                     g.innerHTML = '';
                     g.innerHTML += `<div class="card"><h3>Unidad Competencial 3</h3><p>Trastornos del Lenguaje.</p><button class="btn" onclick="app.loadUC3Menu()">Entrar</button></div>`;
                     this.show('view-units');
-                } else {
-                    alert("Asignatura sin contenido demo.");
+                    return;
                 }
+                // RUTA 08 GEIN (NUEVA)
+                if (fullName.includes('08GEIN')) {
+                    this.show('view-gein-uc4');
+                    return;
+                }
+                
+                alert("Asignatura sin contenido demo.");
+            },
+
+            // --- LÓGICA 08 GEIN ---
+            loadGeinSimGrid() {
+                 const g = document.getElementById('gein-sim-grid');
+                 g.innerHTML = '';
+                 // 20 simulaciones
+                 for(let i=1; i<=20; i++) {
+                     g.innerHTML += `<div class="card-sim"><strong>Simulación ${i}</strong><br><small>Estimulación Oral</small></div>`;
+                 }
+                 // Tarjeta extra accesible
+                 g.innerHTML += `<div class="card-sim" style="border: 2px dashed var(--primary); background:#e6fcfc; cursor:pointer;" onclick="alert('Próximamente: Entrenamiento con simulaciones extra')"><strong>➕ Más Simulaciones</strong><br><small>Entrenamiento Avanzado</small></div>`;
+                 this.show('view-gein-sims');
             },
 
             // --- LÓGICA 01 MSEC ---
@@ -557,6 +651,16 @@
                 document.getElementById('msec-list-title').innerText = ua.title;
                 const grid = document.getElementById('msec-sim-grid');
                 grid.innerHTML = '';
+                
+                // Tarjeta Creador (MÁS SIMULACIONES) - Genera una nueva cada vez
+                grid.innerHTML += `
+                    <div class="card-sim" style="border: 2px dashed #D81B60; background:#fff0f6;" onclick="app.loadMsecCreator()">
+                        <h3 style="color:#D81B60; font-size:1rem;">✨ Más Simulaciones</h3>
+                        <p>Generar caso único con IA</p>
+                    </div>
+                `;
+
+                // Las 20 simulaciones estáticas (pero diferentes entre sí)
                 ua.sims.forEach(sim => {
                     grid.innerHTML += `<div class="card-sim" onclick="app.loadMsecSimDetail('${sim.id}')"><strong>${sim.title}</strong></div>`;
                 });
@@ -570,8 +674,20 @@
                 
                 document.getElementById('msec-sim-title').innerText = sim.title;
                 document.getElementById('msec-sim-context').innerHTML = sim.content;
-                document.getElementById('msec-chat-msgs').innerHTML = `<div class="message msg-ai">Hola. Soy tu tutor IA. ¿Cómo resolverías este caso? Si no lo sabes, dímelo y te ayudaré.</div>`;
+                document.getElementById('msec-chat-msgs').innerHTML = `<div class="message msg-ai">Hola. Soy tu tutor IA para esta simulación. ¿Cómo resolverías este caso? Si no lo sabes, dímelo y te ayudaré.</div>`;
                 
+                this.show('view-msec-detail');
+            },
+
+            loadMsecCreator() {
+                // Genera una simulación NUEVA cada vez que se llama
+                const sim = msecGenerator.generate(this.currentMsecUA);
+                this.currentMsecSim = sim.id; 
+                
+                // Renderizar directamente (sin guardar en lista para que sea efímera y única)
+                document.getElementById('msec-sim-title').innerText = sim.title;
+                document.getElementById('msec-sim-context').innerHTML = sim.content;
+                document.getElementById('msec-chat-msgs').innerHTML = `<div class="message msg-ai">Hola. He generado este caso único para ti. ¿Qué propones?</div>`;
                 this.show('view-msec-detail');
             },
 
@@ -586,6 +702,8 @@
 
                 // Respuesta IA Inteligente
                 setTimeout(() => {
+                    // Si es una simulación generada (no está en la lista estática), pasamos el objeto generado si pudiéramos recuperarlo, 
+                    // o usamos un fallback. Para simplificar en este código demo, usamos lógica genérica si no encuentra ID.
                     const response = msecBrain.process(this.currentMsecSim, this.currentMsecUA, text);
                     msgs.innerHTML += `<div class="message msg-ai">${response}</div>`;
                     msgs.scrollTop = msgs.scrollHeight;
@@ -598,7 +716,7 @@
             loadCase(caseKey) {
                 const names = { marina: "Caso de Marina", anais: "Caso de Anaís", raul: "Caso de Raúl", angel: "Caso de Ángel", luis: "Caso de Luís" };
                 document.getElementById('case-title').innerText = names[caseKey];
-                document.getElementById('case-content').innerHTML = casesData[caseKey]; // Datos COMPLETOS restaurados
+                document.getElementById('case-content').innerHTML = casesData[caseKey]; 
                 
                 const tasksContainer = document.getElementById('case-tasks-container');
                 tasksContainer.innerHTML = '';
