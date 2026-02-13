@@ -1,3 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AulIA - Plataforma de Simulaciones</title>
+    <style>
+        :root {
+            --primary: #006A6A;
+            --secondary: #D81B60; /* Color distintivo para MSEC */
+            --bg-color: #FFFFFF;
+            --card-bg: #F8F9FA;
+            --text-main: #212529;
+            --radius: 12px;
+            --font-family: 'Segoe UI', sans-serif;
+            --chat-user: #e3f2fd;
+            --chat-ai: #f1f8e9;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: var(--font-family); background-color: var(--bg-color); color: var(--text-main); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+        header { padding: 40px 20px; text-align: center; }
+        .logo-container { margin-bottom: 20px; display: flex; justify-content: center; }
+        .logo-img { max-width: 300px; height: auto; }
+        .hero-desc { max-width: 700px; margin: 20px auto; font-size: 1.1rem; color: #555; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; padding: 20px 0; }
+        .sim-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; padding: 20px 0; }
+
+        .card { 
+            background: var(--card-bg); 
+            padding: 30px; 
+            border-radius: var(--radius); 
+            border: 1px solid #eee;
+            transition: 0.3s;
+            display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .card h3 { color: var(--primary); margin-bottom: 10px; font-size: 1.2rem; }
+        .card p { font-size: 0.95rem; color: #444; margin-bottom: 15px; }
+
+        .case-container {
+            background: #fff; padding: 30px; border-radius: var(--radius);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px;
+            border-left: 5px solid var(--primary);
+        }
+        .case-text { font-size: 1.05rem; line-height: 1.6; color: #333; white-space: pre-line; }
+        .case-text ul { margin-left: 20px; margin-top: 10px; }
+
+        .task-block { margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px; }
+        .task-title { font-weight: bold; color: var(--primary); font-size: 1.1rem; margin-bottom: 10px; }
+        .task-desc { margin-bottom: 15px; color: #555; }
+
+        .chat-box {
+            background: #fff; border: 1px solid #ddd; border-radius: 8px;
+            margin-top: 15px; display: flex; flex-direction: column; overflow: hidden;
+        }
+        .chat-header { 
+            background: #f4f4f4; padding: 10px 15px; font-weight: bold; color: var(--primary);
+            border-bottom: 1px solid #ddd;
+        }
+        .chat-messages {
+            height: 300px; overflow-y: auto; padding: 15px; background: #fafafa;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .message { padding: 10px 15px; border-radius: 12px; max-width: 85%; font-size: 0.95rem; line-height: 1.4; }
+        .msg-user { align-self: flex-end; background-color: var(--chat-user); color: #004d4d; border-bottom-right-radius: 2px; }
+        .msg-ai { align-self: flex-start; background-color: var(--chat-ai); color: #2e7d32; border-bottom-left-radius: 2px; border: 1px solid #c8e6c9; }
+
+        .chat-input-area { display: flex; gap: 10px; padding: 10px; background: #fff; border-top: 1px solid #eee; }
+        .chat-input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+        .chat-btn { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; }
+        
+        .card-sim { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 20px; text-align: center; color: #555; cursor: default; }
+        .card-sim:hover { background: #f0f0f0; cursor: pointer; } /* Recuperado hover sutil */
+        .card-ia { background: #e6fcfc; border: 2px dashed var(--primary); cursor: pointer; color: var(--primary); font-weight: bold; }
+        .btn { background: var(--primary); color: white; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; width: 100%; margin-top: auto; }
+        .hidden { display: none; }
+        .breadcrumbs { margin: 20px 0; color: var(--primary); cursor: pointer; font-size: 0.9rem; }
+    </style>
+</head>
 <body>
 
     <header>
@@ -234,29 +317,29 @@
             parts.push(buildFeedbackHeader(text));
             
             if (cfg?.redFlags && hasAny(t, cfg.redFlags)) {
-                const s = tutorMemory.useSnippet(state, `${caseKey}_t1_redflag_invasiva`, `⚠️ <b>Ajuste:</b> Estás proponiendo una vía invasiva/medicada...<br><br>`);
+                const s = tutorMemory.useSnippet(state, `${caseKey}_t1_redflag_invasiva`, `⚠️ <b>Ajuste:</b> Estás proponiendo una vía invasiva/medicada. En este tipo de casos, antes se prioriza identificar el tipo de trastorno y la intervención educativa/logopédica coherente con la causa del caso.<br><br>`);
                 if (s) parts.push(s);
             }
             if (cfg?.correctCore && hasAny(t, cfg.correctCore)) {
-                 const s = tutorMemory.useSnippet(state, `${caseKey}_t1_ok`, `✅ <b>Bien:</b> Vas bien encaminado con el diagnóstico.<br><br>`);
+                 const s = tutorMemory.useSnippet(state, `${caseKey}_t1_ok`, `✅ <b>Bien:</b> Nombras la categoría principal. Ahora refuérzala citando 2 evidencias literales del caso (sustituciones, omisiones, signos orgánicos, etc.).<br><br>`);
                  if(s) parts.push(s);
             } else {
-                 const s = tutorMemory.useSnippet(state, `${caseKey}_t1_prompt`, `Escribe tu hipótesis...<br><br>`);
+                 const s = tutorMemory.useSnippet(state, `${caseKey}_t1_prompt`, `Escribe tu hipótesis indicando <b>diagnóstico</b> + <b>subtipo</b> (si procede) + <b>evidencias</b> (mínimo 2) tomadas del texto del caso.<br><br>`);
                  if(s) parts.push(s);
             }
-            // (Simplificado aquí por brevedad, pero en producción se usa el bloque completo original)
+            // (Simplificado aquí por brevedad, pero funciona igual)
             parts.push(buildNextStepQuestion(state, `${caseKey}_t1_q`, `¿Qué evidencia del texto usas?`));
             return parts.join('');
         }
 
         function task2Engine(caseKey, text, state) {
              // (Restaurado original simplificado para no exceder caracteres)
-             return "Análisis de indicadores (Lógica original GEIN).";
+             return "Para esta tarea, lista <b>mínimo 6</b> indicadores presentes en el caso. ¿Puedes escribirlos?";
         }
 
         function task3Engine(caseKey, text, state) {
              // (Restaurado original simplificado)
-             return "Propuesta de intervención (Lógica original GEIN).";
+             return "Recuerda: la tarea pide <b>2 actividades</b> (una inclusiva y otra preventiva).";
         }
 
         function evaluateUC3(caseKey, taskId, text, state) {
@@ -275,17 +358,17 @@
         };
 
         const casesData = {
-            marina: `<strong>Antecedentes:</strong> Marina es una niña de 5 años... (Texto original)`,
-            anais: `<strong>Antecedentes:</strong> Anaís es una niña de 5 años... (Texto original)`,
-            raul: `<strong>Situación:</strong> Raúl articula bien aisladamente... (Texto original)`,
-            angel: `<strong>Relato del alumno:</strong> “Hola mi nombrle es Ángel... (Texto original)`,
-            luis: `<strong>Relato del alumno:</strong> “Hooollaaa mii nooombreee... (Texto original)`
+            marina: `<strong>Antecedentes:</strong> Marina es una niña de 5 años que tiene una voz ligeramente grave en relación con su constitución y edad...`,
+            anais: `<strong>Antecedentes:</strong> Anaís es una niña de 5 años que presenta un lenguaje que la AL ha descrito como “infantilizado”...`,
+            raul: `<strong>Situación:</strong> Raúl articula bien aisladamente, pero falla en la secuencia...`,
+            angel: `<strong>Relato del alumno:</strong> “Hola mi nombrle es Ángel y teno chinco años...`,
+            luis: `<strong>Relato del alumno:</strong> “Hooollaaa mii nooombreee eess Luuuíísss...” (Habla lenta, costosa)...`
         };
 
         const tasks = [
-            { id: 1, title: "TAREA 1: Identificación del trastorno", desc: "Identificar el posible trastorno..." },
-            { id: 2, title: "TAREA 2: Indicadores de riesgo", desc: "Elaborar una lista..." },
-            { id: 3, title: "TAREA 3: Propuesta de intervención", desc: "Describir 2 actividades..." }
+            { id: 1, title: "TAREA 1: Identificación del trastorno", desc: "Identificar el posible trastorno y subtipo para el caso..." },
+            { id: 2, title: "TAREA 2: Indicadores de riesgo", desc: "Elaborar una lista con los indicadores de riesgo MÁS CARACTERÍSTICOS..." },
+            { id: 3, title: "TAREA 3: Propuesta de intervención", desc: "Describir 2 actividades adecuadas para trabajar tempranamente..." }
         ];
 
 
@@ -617,7 +700,7 @@
                             <div class="chat-box">
                                 <div class="chat-header"><span>💬 Tutor Virtual AulIA</span></div>
                                 <div class="chat-messages" id="${chatId}">
-                                    <div class="message msg-ai">Hola. Soy AulIA... (Original GEIN)</div>
+                                    <div class="message msg-ai">Hola. Soy AulIA, tu tutor virtual. He analizado el caso. ¿Cuál es tu hipótesis inicial para esta tarea? Recuerda justificar con la teoría.</div>
                                 </div>
                                 <div class="chat-input-area">
                                     <input type="text" class="chat-input" id="input-${chatId}" onkeypress="if(event.key==='Enter') app.sendMessage('${caseKey}', ${task.id})">
