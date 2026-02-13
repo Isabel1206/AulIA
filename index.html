@@ -241,7 +241,7 @@
 
     <script>
         // =================================================================
-        // 1. CÓDIGO 43 GEIN (DATOS RESTAURADOS Y COMPLETOS)
+        // 1. CÓDIGO 43 GEIN (CEREBRO ACTUALIZADO - INTELIGENTE)
         // =================================================================
         
         const tutorMemory = {
@@ -250,7 +250,7 @@
             get(caseKey, taskId) {
                 const k = this._mkKey(caseKey, taskId);
                 if (!this.chats[k]) {
-                    this.chats[k] = { usedSnippets: new Set(), turns: [] };
+                    this.chats[k] = { usedSnippets: new Set(), turns: [], lastContext: null };
                 }
                 return this.chats[k];
             },
@@ -268,27 +268,27 @@
         // Reglas pedagógicas GEIN
         const uc3Rules = {
             marina: {
-                t1: { keywords: ["disfonia", "trastorno de la voz"], evidenceReq: ["nodulo", "gritos", "esfuerzo"], feedbackOK: "Correcto. Identificas la **Disfonía**.", feedbackMiss: "¿Es un problema de articulación o de emisión (voz)?" },
+                t1: { keywords: ["disfonia", "trastorno de la voz"], evidenceReq: ["nodulo", "gritos", "esfuerzo"], feedbackOK: "Correcto. Identificas la **Disfonía**.", feedbackMiss: "Revisa el concepto. ¿Es un problema de articulación (habla) o de emisión (voz)? Fíjate en la 'ronquera'." },
                 t2: { minIndicators: 6, keywords: ["grita", "esfuerzo", "voz grave", "agudos", "gallos", "inaudible", "rigidez", "nodulos"] },
-                t3: { req: ["higiene vocal"], inclusive: ["semáforo", "cartel", "cuento"] }
+                t3: { req: ["higiene vocal"], inclusive: ["semáforo", "cartel", "cuento", "rutina"] }
             },
             anais: {
-                t1: { keywords: ["dislalia"], evidenceReq: ["seseo", "rotacismo", "omision"], feedbackOK: "Exacto. Es una **Dislalia** funcional.", feedbackMiss: "¿El error es sistemático en la articulación?" },
+                t1: { keywords: ["dislalia"], evidenceReq: ["seseo", "rotacismo", "omision"], feedbackOK: "Exacto. Es una **Dislalia**. El origen es funcional/motriz.", feedbackMiss: "Cuidado. ¿El fallo es mental (organización) o motriz (ejecución)?" },
                 t2: { minIndicators: 4, keywords: ["seseo", "rotacismo", "omision", "infantilizado"] },
                 t3: { req: ["praxias", "soplo"], inclusive: ["juego", "grupo"] }
             },
             raul: {
-                t1: { keywords: ["fonologico", "retraso del habla"], evidenceReq: ["secuencia", "estructura", "bosch"], feedbackOK: "Bien visto. Es un **Trastorno Fonológico**.", feedbackMiss: "Si articula bien aislado pero falla en la palabra, es organización mental." },
+                t1: { keywords: ["fonologico", "retraso del habla"], evidenceReq: ["secuencia", "estructura", "bosch"], feedbackOK: "Bien visto. Es un **Trastorno Fonológico**.", feedbackMiss: "Analiza esto: Si puede decir el sonido aislado pero falla en la frase, ¿es muscular o mental?" },
                 t2: { minIndicators: 4, keywords: ["secuencia", "estructura", "metatesis", "omision"] },
                 t3: { req: ["conciencia fonologica"], inclusive: ["rimas", "palmadas"] }
             },
             angel: {
-                t1: { keywords: ["disglosia"], evidenceReq: ["frenillo", "anquiloglosia"], feedbackOK: "Correcto. Es una **Disglosia** (orgánica).", feedbackMiss: "Hay una causa física en la lengua (frenillo)." },
+                t1: { keywords: ["disglosia"], evidenceReq: ["frenillo", "anquiloglosia"], feedbackOK: "Correcto. Es una **Disglosia** debido a la alteración orgánica.", feedbackMiss: "Fíjate en la 'información familiar'. Hay una causa física en la lengua." },
                 t2: { minIndicators: 3, keywords: ["frenillo", "anquiloglosia", "malformacion"] },
                 t3: { req: ["no forzar", "autoestima"], inclusive: ["respeto", "diversidad"] }
             },
             luis: {
-                t1: { keywords: ["disartria"], evidenceReq: ["espasticidad", "neurologico"], feedbackOK: "Acertado. La **Disartria** implica debilidad muscular neurológica.", feedbackMiss: "Fíjate en la espasticidad y lentitud." },
+                t1: { keywords: ["disartria"], evidenceReq: ["espasticidad", "neurologico"], feedbackOK: "Acertado. La **Disartria** implica debilidad muscular de origen neurológico.", feedbackMiss: "No es solo tartamudez. Lee la nota sobre 'espasticidad'." },
                 t2: { minIndicators: 4, keywords: ["espasticidad", "lenta", "monotona", "neurologico"] },
                 t3: { req: ["saac", "relajacion"], inclusive: ["apoyos", "tiempo"] }
             }
@@ -296,37 +296,100 @@
 
         const knowledgeBase = {
             general: { scope: "Evidencia: 'UC3 - Trastornos de la Comunicación'." },
-            marina: { diagnosis: "Disfonía. Evidencia: Nódulos por abuso vocal.", etiology: "Funcional por gritos.", intervention: "Higiene vocal." },
-            anais: { diagnosis: "Dislalia. Evidencia: Errores motrices sistemáticos.", details: "Sustitución, Omisión.", intervention: "Praxias y soplo." },
-            raul: { diagnosis: "Trastorno Fonológico. Evidencia: Falla en secuencia, no en articulación aislada.", intervention: "Conciencia fonológica." },
-            angel: { diagnosis: "Disglosia. Evidencia: Anquiloglosia (frenillo corto).", intervention: "No forzar articulación." },
-            luis: { diagnosis: "Disartria. Evidencia: Espasticidad y componente neurológico.", intervention: "SAAC y relajación." }
+            marina: { diagnosis: "Disfonía (Trastorno de la voz). Evidencia: 'UC3'. Afecta a tono, timbre e intensidad.", etiology: "Disfonía Funcional por abuso vocal (gritos) que deriva en lesión orgánica (nódulos).", intervention: "Intervención: Higiene vocal, relajación y reeducación respiratoria." },
+            anais: { diagnosis: "Dislalia (Trastorno fonético). Evidencia: '43 GEIN UC3'. Errores motrices sistemáticos.", details: "Tipos de error: Sustitución (seseo), Omisión (final de palabra), Simplificación.", intervention: "Actividades: Praxias bucofonatorias, soplo y discriminación auditiva." },
+            raul: { diagnosis: "Trastorno Fonológico (Retraso del habla). Evidencia: '43 GEIN UC3'. Articula bien aisladamente pero falla en la secuencia.", details: "Procesos de simplificación: Metátesis, omisiones. Problema de organización mental.", intervention: "Actividades: Conciencia fonológica, rimas, segmentación silábica." },
+            angel: { diagnosis: "Disglosia (Trastorno orgánico). Evidencia: 'UC3'. Alteración por malformación en órganos del habla.", details: "Causa: Anquiloglosia (frenillo lingual corto). Impide la articulación física.", intervention: "Enfoque: No forzar articulación imposible. Trabajo de compensación y autoestima." },
+            luis: { diagnosis: "Disartria (Componente neurológico). Evidencia: 'UC3'. Debilidad y espasticidad muscular.", details: "No confundir con Disfemia. La lentitud es por la espasticidad (PCI).", intervention: "Intervención: SAAC (si fuera necesario), relajación, trabajo multidisciplinar." }
         };
 
+        // --- CEREBRO IA MEJORADO (GEIN) ---
         function generateResponse(caseKey, taskId, text, state) {
             const t = normText(text);
             const rule = uc3Rules[caseKey];
             const kb = knowledgeBase[caseKey];
-            let responseHTML = `<i>He analizado tu respuesta...</i><br><br>`;
+            let responseHTML = "";
+
+            // 1. DETECCIÓN DE PETICIÓN DE AYUDA / "NO LO SÉ"
+            if (hasAny(t, ["no se", "no lo se", "ni idea", "ayuda", "dime la respuesta", "solucion", "no entiendo", "me rindo", "cual es", "puedes decirme"])) {
+                state.lastContext = "solution_given"; // Marcamos que hemos dado la solución
+                responseHTML += `🤖 <b>Asistente IA:</b> ¡No pasa nada! Para eso estamos aquí, para aprender juntos.<br><br>`;
+                
+                if (taskId === 1) {
+                    responseHTML += `💡 <b>Solución Diagnóstica:</b><br>
+                    Basándonos en la teoría de la UC3, este caso corresponde a una <b>${kb.diagnosis}</b>.<br>
+                    Las evidencias clave que debes buscar en el texto son: <i>${rule.t1.evidenceReq.join(", ")}</i>.<br><br>
+                    ¿Te encaja ahora con lo que has leído?`;
+                } else if (taskId === 2) {
+                    responseHTML += `💡 <b>Indicadores Clave:</b><br>
+                    Los signos de alerta principales en este texto son: <b>${rule.t2.keywords.join(", ")}</b>.<br>
+                    ¿Puedes localizar dónde aparecen en el relato del caso?`;
+                } else if (taskId === 3) {
+                    responseHTML += `💡 <b>Propuesta de Intervención:</b><br>
+                    Para este trastorno (${kb.diagnosis}), la teoría sugiere trabajar: <b>${kb.intervention}</b>.<br>
+                    Una actividad inclusiva podría ser un ${rule.t3.inclusive[0]} y una preventiva trabajar ${rule.t3.req[0]}.`;
+                }
+                return responseHTML;
+            }
+
+            // 2. CONTEXTO CONVERSACIONAL (RESPUESTAS A PREGUNTAS SOBRE LA SOLUCIÓN)
+            if (state.lastContext === "solution_given" && hasAny(t, ["por que", "seguro", "explica mas", "no estoy de acuerdo", "y si", "pero", "mas informacion", "teoria"])) {
+                responseHTML += `💬 <b>Profundizando en la teoría:</b><br>`;
+                responseHTML += `${kb.details || kb.etiology} <br>`;
+                responseHTML += `En el manual de la asignatura (UC3) se especifica que debemos diferenciar el origen del problema (físico, neurológico o ambiental) para elegir la intervención.`;
+                return responseHTML;
+            }
+
+            // 3. PETICIÓN DE MÁS APORTACIONES
+            if (hasAny(t, ["mas cosas", "algo mas", "otra idea", "mas aportaciones", "que mas"])) {
+                responseHTML += `📚 <b>Ampliando información:</b><br>`;
+                if (taskId === 1) responseHTML += `Además del diagnóstico principal, ten en cuenta la etiología: ${kb.etiology || kb.details}.`;
+                else if (taskId === 3) responseHTML += `Otras actividades recomendadas serían: ${kb.intervention}. ¿Cómo las adaptarías al aula?`;
+                else responseHTML += `Revisa también el impacto emocional que menciona el caso.`;
+                return responseHTML;
+            }
+
+            // 4. EVALUACIÓN DE RESPUESTA DEL ALUMNO (LÓGICA ORIGINAL MEJORADA)
+            responseHTML += `<i>He analizado tu respuesta...</i><br><br>`;
 
             if (taskId === 1) {
-                if (hasAny(t, rule.t1.keywords)) {
-                    responseHTML += `✅ <b>Diagnóstico:</b> ${rule.t1.feedbackOK}<br>`;
-                    if (hasAny(t, rule.t1.evidenceReq)) responseHTML += `👍 Has citado las evidencias clave.<br>`;
-                    else responseHTML += `⚠️ Cita las evidencias del texto (ej. ${rule.t1.evidenceReq[0]}).<br>`;
-                    responseHTML += `📚 <b>Teoría:</b> ${kb.diagnosis}`;
-                } else {
-                    responseHTML += `❌ ${rule.t1.feedbackMiss}`;
+                if (hasAny(t, ["cirugia", "operar", "medicamento"])) {
+                    return responseHTML + `⚠️ <b>Alerta:</b> Como maestros, nuestra competencia es educativa, no clínica. Céntrate en el aula.`;
                 }
-            } else if (taskId === 2) {
-                responseHTML += `Has listado indicadores. Compara con: <b>${rule.t2.keywords.join(", ")}</b>.`;
-            } else if (taskId === 3) {
-                if (hasAny(t, ["grupo", "clase"]) && hasAny(t, ["prevencion", "actividad"])) {
-                    responseHTML += `🌟 <b>Buen enfoque inclusivo y preventivo.</b>`;
+                if (hasAny(t, rule.t1.keywords)) {
+                    responseHTML += `✅ <b>Diagnóstico Correcto:</b> ${rule.t1.feedbackOK}<br>`;
+                    responseHTML += `📚 <b>Fundamentación:</b> ${kb.diagnosis}<br>`;
+                    if (!hasAny(t, rule.t1.evidenceReq)) responseHTML += `💡 <b>Sugerencia:</b> Para completar tu respuesta, cita las palabras textuales del caso (ej. ${rule.t1.evidenceReq[0]}).`;
                 } else {
-                    responseHTML += `⚠️ Asegura una actividad <b>inclusiva</b> (todo el grupo) y una <b>preventiva</b>.`;
+                    responseHTML += `🤔 <b>Revisemos juntos:</b> ${rule.t1.feedbackMiss}<br>`;
+                    responseHTML += `Si no estás seguro, dímelo y te explicaré la teoría.`;
+                }
+            } 
+            else if (taskId === 2) {
+                const found = rule.t2.keywords.filter(k => t.includes(k));
+                if (found.length >= 3) {
+                    responseHTML += `✅ <b>Bien identificados:</b> Has detectado indicadores importantes como <b>${found.join(", ")}</b>.<br>`;
+                    if (found.length < 6) responseHTML += `Intenta encontrar alguno más para llegar a los 6 solicitados. (Pista: Revisa el informe médico o familiar).`;
+                } else {
+                    responseHTML += `📉 Has encontrado pocos indicadores. Fíjate en los síntomas físicos y en la conducta del alumno. ¿Necesitas ayuda?`;
+                }
+            } 
+            else if (taskId === 3) {
+                const hasInclusive = hasAny(t, ["clase", "grupo", "todos", "asamblea", "aula"]);
+                const hasPreventive = hasAny(t, ["prevencion", "pautas", "habitos", "higiene"]);
+                
+                if (hasInclusive && hasPreventive) {
+                    responseHTML += `🌟 <b>¡Excelente enfoque!</b> Cubres la dimensión inclusiva y preventiva.<br>`;
+                    responseHTML += `📚 <b>Teoría aplicada:</b> ${kb.intervention}`;
+                } else {
+                    responseHTML += `⚠️ <b>Ajuste necesario:</b><br>`;
+                    if (!hasInclusive) responseHTML += `- Recuerda proponer algo para <b>todo el grupo clase</b> (inclusión).<br>`;
+                    if (!hasPreventive) responseHTML += `- No olvides el enfoque <b>preventivo</b>.<br>`;
+                    responseHTML += `¿Quieres que te de un ejemplo?`;
                 }
             }
+            
+            state.lastContext = "evaluated";
             return responseHTML;
         }
 
@@ -754,6 +817,7 @@
                 tutorMemory.pushTurn(state, "user", text);
 
                 setTimeout(() => {
+                    // CEREBRO IA GEIN ACTUALIZADO
                     const response = generateResponse(caseKey, taskId, text, state);
                     tutorMemory.pushTurn(state, "ai", response);
                     msgContainer.innerHTML += `<div class="message msg-ai">${response}</div>`;
