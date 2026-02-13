@@ -1,39 +1,233 @@
-// --- CEREBRO IA: TUTOR UC3 (ESTILO NOTEBOOKLM) ---
-        
-        // 1. BASE DE CONOCIMIENTO (Citas textuales de los documentos adjuntos)
-        const knowledgeBase = {
-            general: {
-                scope: "Evidencia: 'UC3 - Trastornos de la Comunicación'. Mi ámbito es únicamente la detección e intervención educativa en alteraciones del lenguaje oral en Educación Infantil."
-            },
-            marina: {
-                diagnosis: "Disfonía (Trastorno de la voz). Evidencia: 'UC3 - Trastornos de la Comunicación'. Afecta a tono, timbre e intensidad.",
-                etiology: "Disfonía Funcional por abuso vocal (gritos) que deriva en lesión orgánica (nódulos). Evidencia: Informe ORL citado en el caso.",
-                indicators: "Indicadores clave: Esfuerzo vocal, 'gallos', voz grave para su edad, rigidez muscular. (Ref: 'Signos de riesgo', 43 GEIN UC3).",
-                intervention: "Intervención: Higiene vocal, relajación y reeducación respiratoria. Evidencia: 'Pautas de higiene vocal' (Material de estudio UC3)."
-            },
-            anais: {
-                diagnosis: "Dislalia (Trastorno fonético). Evidencia: '43 GEIN UC3 - Alteraciones del Lenguaje'. Errores motrices sistemáticos.",
-                details: "Tipos de error: Sustitución (seseo), Omisión (final de palabra), Simplificación. No es fonológico porque falla la ejecución motriz.",
-                intervention: "Actividades: Praxias bucofonatorias, soplo y discriminación auditiva. Evidencia: 'Vídeos sobre PRAXIAS' y 'Ejercicios de estimulación' (Material UC3)."
-            },
-            raul: {
-                diagnosis: "Trastorno Fonológico (Retraso del habla). Evidencia: '43 GEIN UC3'. Articula bien aisladamente pero falla en la secuencia.",
-                details: "Procesos de simplificación (Laura Bosch, 1983): Metátesis, omisiones de sílabas átonas. Problema de organización mental del sonido.",
-                intervention: "Actividades: Conciencia fonológica, rimas, segmentación silábica. Evidencia: 'Intervención temprana' (Material UC3)."
-            },
-            angel: {
-                diagnosis: "Disglosia (Trastorno orgánico). Evidencia: 'UC3 - Trastornos de la Comunicación'. Alteración por malformación en órganos del habla.",
-                details: "Causa: Anquiloglosia (frenillo lingual corto). Impide la articulación física.",
-                intervention: "Enfoque: No forzar articulación imposible sin valoración médica previa. Trabajo de compensación y autoestima."
-            },
-            luis: {
-                diagnosis: "Disartria (Componente neurológico). Evidencia: 'DSM-5' / 'UC3'. Debilidad y espasticidad muscular.",
-                redFlag: "No confundir con Disfemia. La lentitud y tono bajo son por la espasticidad, no por bloqueos de fluidez.",
-                intervention: "Intervención: SAAC (si fuera necesario), relajación, trabajo multidisciplinar con fisioterapia."
-            }
-        };
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AulIA - Plataforma de Simulaciones</title>
+    <style>
+        :root {
+            --primary: #006A6A;
+            --secondary: #D81B60; /* Color distintivo para MSEC */
+            --bg-color: #FFFFFF;
+            --card-bg: #F8F9FA;
+            --text-main: #212529;
+            --radius: 12px;
+            --font-family: 'Segoe UI', sans-serif;
+            --chat-user: #e3f2fd;
+            --chat-ai: #f1f8e9;
+        }
 
-        // 2. MEMORIA DEL TUTOR
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: var(--font-family); background-color: var(--bg-color); color: var(--text-main); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+        header { padding: 40px 20px; text-align: center; }
+        .logo-container { margin-bottom: 20px; display: flex; justify-content: center; }
+        .logo-img { max-width: 300px; height: auto; }
+        .hero-desc { max-width: 700px; margin: 20px auto; font-size: 1.1rem; color: #555; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; padding: 20px 0; }
+        .sim-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; padding: 20px 0; }
+
+        .card { 
+            background: var(--card-bg); 
+            padding: 30px; 
+            border-radius: var(--radius); 
+            border: 1px solid #eee;
+            transition: 0.3s;
+            display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .card h3 { color: var(--primary); margin-bottom: 10px; font-size: 1.2rem; }
+        .card p { font-size: 0.95rem; color: #444; margin-bottom: 15px; }
+
+        .case-container {
+            background: #fff; padding: 30px; border-radius: var(--radius);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px;
+            border-left: 5px solid var(--primary);
+        }
+        .case-text { font-size: 1.05rem; line-height: 1.6; color: #333; white-space: pre-line; }
+        .case-text ul { margin-left: 20px; margin-top: 10px; }
+
+        .task-block { margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px; }
+        .task-title { font-weight: bold; color: var(--primary); font-size: 1.1rem; margin-bottom: 10px; }
+        .task-desc { margin-bottom: 15px; color: #555; }
+
+        .chat-box {
+            background: #fff; border: 1px solid #ddd; border-radius: 8px;
+            margin-top: 15px; display: flex; flex-direction: column; overflow: hidden;
+        }
+        .chat-header { 
+            background: #f4f4f4; padding: 10px 15px; font-weight: bold; color: var(--primary);
+            border-bottom: 1px solid #ddd;
+        }
+        .chat-messages {
+            height: 300px; overflow-y: auto; padding: 15px; background: #fafafa;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .message { padding: 10px 15px; border-radius: 12px; max-width: 85%; font-size: 0.95rem; line-height: 1.4; }
+        .msg-user { align-self: flex-end; background-color: var(--chat-user); color: #004d4d; border-bottom-right-radius: 2px; }
+        .msg-ai { align-self: flex-start; background-color: var(--chat-ai); color: #2e7d32; border-bottom-left-radius: 2px; border: 1px solid #c8e6c9; }
+
+        .chat-input-area { display: flex; gap: 10px; padding: 10px; background: #fff; border-top: 1px solid #eee; }
+        .chat-input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+        .chat-btn { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; }
+        
+        .card-sim { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 20px; text-align: center; color: #555; cursor: default; }
+        .card-sim:hover { background: #f0f0f0; cursor: pointer; }
+        .btn { background: var(--primary); color: white; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; width: 100%; margin-top: auto; }
+        .hidden { display: none; }
+        
+        /* Navegación mejorada */
+        .breadcrumbs { margin: 20px 0; color: var(--primary); font-size: 0.9rem; display: flex; align-items: center; gap: 15px; }
+        .nav-btn { cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 5px; }
+        .nav-btn:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <div class="logo-container">
+                <img src="logo.png" alt="Logo AulIA" class="logo-img" onerror="this.style.display='none'; document.getElementById('alt-logo').style.display='block'">
+                <h1 id="alt-logo" style="display:none; color:var(--primary); font-size:2.5rem;">AulIA</h1>
+            </div>
+            <p class="hero-desc">Plataforma de simulaciones educativas basada en IA generativa. Practica la toma de decisiones y la reflexión docente en entornos profesionales seguros.</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="breadcrumbs" class="breadcrumbs hidden">
+            <span class="nav-btn" onclick="app.goBack()">⬅ Volver</span>
+            <span style="color:#ccc">|</span>
+            <span class="nav-btn" onclick="app.goHome()">🏠 Inicio</span>
+            <span id="breadcrumb-text" style="color:#666; margin-left: 10px;"></span>
+        </div>
+        
+        <section id="view-home"><div class="grid" id="degrees-grid"></div></section>
+        
+        <section id="view-subjects" class="hidden">
+            <h2 id="degree-title" style="margin-bottom:20px; color:var(--primary)"></h2>
+            <div class="grid" id="subjects-grid"></div>
+        </section>
+
+        <section id="view-levels" class="hidden">
+            <h2 id="subject-title" style="margin-bottom:20px; color:var(--primary)"></h2>
+            <div class="grid">
+                <div class="card"><h3>Nivel 1</h3><button class="btn" onclick="app.loadSimulations(1)">Acceder</button></div>
+                <div class="card"><h3>Nivel 2</h3><button class="btn" onclick="app.loadSimulations(2)">Acceder</button></div>
+                <div class="card"><h3>Nivel 3</h3><button class="btn" onclick="app.loadSimulations(3)">Acceder</button></div>
+            </div>
+        </section>
+
+        <section id="view-units" class="hidden">
+            <h2 id="unit-subject-title" style="margin-bottom:20px; color:var(--primary)"></h2>
+            <p style="margin-bottom:20px;">Selecciona la Unidad Competencial:</p>
+            <div class="grid" id="units-grid"></div>
+        </section>
+
+        <section id="view-uc3-menu" class="hidden">
+            <h2 style="margin-bottom:20px; color:var(--primary)">Unidad Competencial 3</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>Actividad de la Unidad Competencial 3</h3>
+                    <p>Resolución de casos prácticos evaluables.</p>
+                    <button class="btn" onclick="app.loadUC3ActivityMenu()">Acceder</button>
+                </div>
+                <div class="card">
+                    <h3>Práctica con simulaciones</h3>
+                    <p>Entrenamiento práctico con diferentes niveles.</p>
+                    <button class="btn" onclick="app.loadUC3PracticeLevels()">Acceder</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-uc3-cases-menu" class="hidden">
+            <h2 style="margin-bottom:20px; color:var(--primary)">Selección de Caso de Estudio</h2>
+            <div class="grid">
+                <div class="card"><h3>Caso de Marina</h3><button class="btn" onclick="app.loadCase('marina')">Acceder</button></div>
+                <div class="card"><h3>Caso de Anaís</h3><button class="btn" onclick="app.loadCase('anais')">Acceder</button></div>
+                <div class="card"><h3>Caso de Raúl</h3><button class="btn" onclick="app.loadCase('raul')">Acceder</button></div>
+                <div class="card"><h3>Caso de Ángel</h3><button class="btn" onclick="app.loadCase('angel')">Acceder</button></div>
+                <div class="card"><h3>Caso de Luís</h3><button class="btn" onclick="app.loadCase('luis')">Acceder</button></div>
+            </div>
+        </section>
+
+        <section id="view-uc3-case-detail" class="hidden">
+            <h2 id="case-title" style="margin-bottom:20px; color:var(--primary)"></h2>
+            <div id="case-content" class="case-container"></div>
+            <div id="case-tasks-container"></div>
+        </section>
+
+        <section id="view-uc3-levels" class="hidden">
+            <h2 style="margin-bottom:20px; color:var(--primary)">UC3 - Práctica con simulaciones</h2>
+            <div class="grid">
+                <div class="card"><h3>Nivel 1 (Fácil)</h3><p>Casos guiados, menor complejidad.</p><button class="btn" onclick="app.loadUC3SimGrid(1)">Acceder</button></div>
+                <div class="card"><h3>Nivel 2 (Intermedio)</h3><p>Casos con más variables y decisiones.</p><button class="btn" onclick="app.loadUC3SimGrid(2)">Acceder</button></div>
+                <div class="card"><h3>Nivel 3 (Difícil)</h3><p>Casos complejos, dilemas.</p><button class="btn" onclick="app.loadUC3SimGrid(3)">Acceder</button></div>
+            </div>
+        </section>
+
+        <section id="view-uc3-sims" class="hidden">
+            <h2 id="uc3-sim-title" style="margin-bottom:20px; color:var(--primary)"></h2>
+            <div id="uc3-sim-grid" class="sim-grid"></div>
+        </section>
+
+        <section id="view-simulations" class="hidden">
+            <h2 id="level-title" style="margin-bottom:20px; color:var(--primary)"></h2>
+            <div id="simulations-grid" class="sim-grid"></div>
+        </section>
+
+        <section id="view-msec-ua" class="hidden">
+            <h2 style="margin-bottom:20px; color:#D81B60;">01MSEC: Unidades de Aprendizaje</h2>
+            <div class="grid">
+                <div class="card" style="border-left: 4px solid #D81B60;">
+                    <h3 style="color:#D81B60;">UA1. Conceptos previos</h3>
+                    <p>Aprendizaje, Personalidad y Desarrollo.</p>
+                    <button class="btn" style="background:#D81B60;" onclick="app.loadMsecSimList('UA1')">Acceder</button>
+                </div>
+                <div class="card" style="border-left: 4px solid #D81B60;">
+                    <h3 style="color:#D81B60;">UA2. Desarrollo psicológico</h3>
+                    <p>Construcción de la personalidad y etapas.</p>
+                    <button class="btn" style="background:#D81B60;" onclick="app.loadMsecSimList('UA2')">Acceder</button>
+                </div>
+                <div class="card" style="border-left: 4px solid #D81B60;">
+                    <h3 style="color:#D81B60;">UA3. Proceso E-A</h3>
+                    <p>Implicaciones educativas y teorías.</p>
+                    <button class="btn" style="background:#D81B60;" onclick="app.loadMsecSimList('UA3')">Acceder</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-msec-list" class="hidden">
+            <h2 id="msec-list-title" style="margin-bottom:20px; color:#D81B60;"></h2>
+            <div class="sim-grid" id="msec-sim-grid"></div>
+        </section>
+
+        <section id="view-msec-detail" class="hidden">
+            <h2 id="msec-sim-title" style="margin-bottom:20px; color:#D81B60;"></h2>
+            <div class="case-container" style="border-left-color: #D81B60;">
+                <div id="msec-sim-context" class="case-text"></div>
+            </div>
+            <div class="task-block">
+                <div class="task-title" style="color:#D81B60;">Chat de Asesoramiento Docente (IA 01MSEC)</div>
+                <div class="chat-box">
+                    <div class="chat-header" style="color:#D81B60; background:#fff0f6;">💬 Tutor Especialista 01MSEC</div>
+                    <div class="chat-messages" id="msec-chat-msgs"></div>
+                    <div class="chat-input-area">
+                        <input type="text" class="chat-input" id="msec-chat-input" placeholder="Consulta o argumenta tu decisión..." onkeypress="if(event.key==='Enter') app.sendMsecMessage()">
+                        <button class="chat-btn" style="background:#D81B60;" onclick="app.sendMsecMessage()">Enviar</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // =================================================================
+        // 1. CÓDIGO 43 GEIN (DATOS RESTAURADOS Y COMPLETOS)
+        // =================================================================
+        
         const tutorMemory = {
             chats: {},
             _mkKey(caseKey, taskId) { return `${caseKey}::${taskId}`; },
@@ -46,157 +240,148 @@
             },
             pushTurn(state, who, text) {
                 state.turns.push({ who, text, ts: Date.now() });
-            },
-            hasUsed(state, id) { return state.usedSnippets.has(id); },
-            markUsed(state, id) { state.usedSnippets.add(id); }
+            }
         };
 
-        // 3. UTILIDADES DE TEXTO
         function normText(s) {
             return (s || "").toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
         }
         function hasAny(t, arr) { return arr.some(w => t.includes(w)); }
         function excerpt(text, n=100) { return text.length > n ? text.slice(0, n) + "..." : text; }
 
-        // 4. CONFIGURACIÓN DE CASOS (Reglas de evaluación pedagógica)
+        // Reglas pedagógicas GEIN
         const uc3Rules = {
             marina: {
-                t1: {
-                    keywords: ["disfonia", "trastorno de la voz"],
-                    evidenceReq: ["nodulo", "gritos", "esfuerzo"],
-                    feedbackOK: "Correcto. Identificas la **Disfonía** (alteración de la voz).",
-                    feedbackMiss: "Revisa el concepto. ¿Es un problema de articulación (habla) o de emisión (voz)? Fíjate en la 'ronquera' y los 'gallos'."
-                },
-                t2: {
-                    minIndicators: 6,
-                    keywords: ["grita", "esfuerzo", "voz grave", "agudos", "gallos", "inaudible", "rigidez", "nodulos"],
-                },
-                t3: {
-                    req: ["higiene vocal", "respiracion", "relajacion"],
-                    inclusive: ["semáforo", "cartel", "cuento", "rutina"]
-                }
+                t1: { keywords: ["disfonia", "trastorno de la voz"], evidenceReq: ["nodulo", "gritos", "esfuerzo"], feedbackOK: "Correcto. Identificas la **Disfonía**.", feedbackMiss: "¿Es un problema de articulación o de emisión (voz)?" },
+                t2: { minIndicators: 6, keywords: ["grita", "esfuerzo", "voz grave", "agudos", "gallos", "inaudible", "rigidez", "nodulos"] },
+                t3: { req: ["higiene vocal"], inclusive: ["semáforo", "cartel", "cuento"] }
             },
-            anais: { // Dislalia
-                t1: {
-                    keywords: ["dislalia"],
-                    evidenceReq: ["seseo", "rotacismo", "omision"],
-                    feedbackOK: "Exacto. Es una **Dislalia**. El origen es funcional/motriz, no neurológico.",
-                    feedbackMiss: "Cuidado. ¿El fallo es mental (organización) o motriz (ejecución)? Fíjate que comete el error siempre (sistemático)."
-                }
+            anais: {
+                t1: { keywords: ["dislalia"], evidenceReq: ["seseo", "rotacismo", "omision"], feedbackOK: "Exacto. Es una **Dislalia** funcional.", feedbackMiss: "¿El error es sistemático en la articulación?" },
+                t2: { minIndicators: 4, keywords: ["seseo", "rotacismo", "omision", "infantilizado"] },
+                t3: { req: ["praxias", "soplo"], inclusive: ["juego", "grupo"] }
             },
-            raul: { // Fonológico
-                t1: {
-                    keywords: ["fonologico", "retraso del habla"],
-                    evidenceReq: ["secuencia", "estructura", "bosch"],
-                    feedbackOK: "Bien visto. Es un **Trastorno Fonológico**. Articula bien sonidos sueltos, pero falla en la palabra.",
-                    feedbackMiss: "Analiza esto: Si puede decir el sonido aislado pero falla en la frase, ¿es muscular (dislalia) o mental (fonológico)?"
-                }
+            raul: {
+                t1: { keywords: ["fonologico", "retraso del habla"], evidenceReq: ["secuencia", "estructura", "bosch"], feedbackOK: "Bien visto. Es un **Trastorno Fonológico**.", feedbackMiss: "Si articula bien aislado pero falla en la palabra, es organización mental." },
+                t2: { minIndicators: 4, keywords: ["secuencia", "estructura", "metatesis", "omision"] },
+                t3: { req: ["conciencia fonologica"], inclusive: ["rimas", "palmadas"] }
             },
-            angel: { // Disglosia
-                t1: {
-                    keywords: ["disglosia"],
-                    evidenceReq: ["frenillo", "anquiloglosia", "organico"],
-                    feedbackOK: "Correcto. Es una **Disglosia** debido a la alteración orgánica (frenillo).",
-                    feedbackMiss: "Fíjate en la 'información familiar'. Hay una causa física en la lengua. Eso descarta la dislalia funcional."
-                }
+            angel: {
+                t1: { keywords: ["disglosia"], evidenceReq: ["frenillo", "anquiloglosia"], feedbackOK: "Correcto. Es una **Disglosia** (orgánica).", feedbackMiss: "Hay una causa física en la lengua (frenillo)." },
+                t2: { minIndicators: 3, keywords: ["frenillo", "anquiloglosia", "malformacion"] },
+                t3: { req: ["no forzar", "autoestima"], inclusive: ["respeto", "diversidad"] }
             },
-            luis: { // Disartria
-                t1: {
-                    keywords: ["disartria"],
-                    evidenceReq: ["espasticidad", "neurologico", "tono bajo"],
-                    feedbackOK: "Acertado. La **Disartria** implica debilidad muscular de origen neurológico.",
-                    feedbackMiss: "No es solo tartamudez. Lee la nota sobre 'espasticidad'. Eso indica daño neurológico, no solo fluidez."
-                }
+            luis: {
+                t1: { keywords: ["disartria"], evidenceReq: ["espasticidad", "neurologico"], feedbackOK: "Acertado. La **Disartria** implica debilidad muscular neurológica.", feedbackMiss: "Fíjate en la espasticidad y lentitud." },
+                t2: { minIndicators: 4, keywords: ["espasticidad", "lenta", "monotona", "neurologico"] },
+                t3: { req: ["saac", "relajacion"], inclusive: ["apoyos", "tiempo"] }
             }
         };
 
-        // 5. MOTOR DE RESPUESTA (ENGINE)
+        const knowledgeBase = {
+            general: { scope: "Evidencia: 'UC3 - Trastornos de la Comunicación'." },
+            marina: { diagnosis: "Disfonía. Evidencia: Nódulos por abuso vocal.", etiology: "Funcional por gritos.", intervention: "Higiene vocal." },
+            anais: { diagnosis: "Dislalia. Evidencia: Errores motrices sistemáticos.", details: "Sustitución, Omisión.", intervention: "Praxias y soplo." },
+            raul: { diagnosis: "Trastorno Fonológico. Evidencia: Falla en secuencia, no en articulación aislada.", intervention: "Conciencia fonológica." },
+            angel: { diagnosis: "Disglosia. Evidencia: Anquiloglosia (frenillo corto).", intervention: "No forzar articulación." },
+            luis: { diagnosis: "Disartria. Evidencia: Espasticidad y componente neurológico.", intervention: "SAAC y relajación." }
+        };
+
         function generateResponse(caseKey, taskId, text, state) {
             const t = normText(text);
             const rule = uc3Rules[caseKey];
             const kb = knowledgeBase[caseKey];
-            let responseHTML = "";
+            let responseHTML = `<i>He analizado tu respuesta...</i><br><br>`;
 
-            // CABECERA DE FEEDBACK
-            responseHTML += `<i>He analizado tu respuesta: "${excerpt(text)}"</i><br><br>`;
-
-            // --- TAREA 1: IDENTIFICACIÓN ---
             if (taskId === 1) {
-                const r = rule.t1;
-                // A. Check Red Flags (Médico/Invasivo)
-                if (hasAny(t, ["cirugia", "operar", "medicamento", "farmaco"])) {
-                    return responseHTML + `⚠️ <b>Alerta de Rol:</b> Como maestros de GEIN, nuestra competencia NO es clínica ni quirúrgica. <br><b>Evidencia UC3:</b> Debemos centrarnos en la prevención y reeducación educativa. Reenfoca tu respuesta hacia el aula.`;
-                }
-
-                // B. Check Diagnóstico Core
-                if (hasAny(t, r.keywords)) {
-                    responseHTML += `✅ <b>Diagnóstico:</b> ${r.feedbackOK}<br>`;
-                    
-                    // C. Check Evidencias
-                    if (hasAny(t, r.evidenceReq)) {
-                        responseHTML += `👍 <b>Evidencias:</b> Has citado correctamente elementos del texto.<br>`;
-                        responseHTML += `📚 <b>Fundamentación Teórica:</b> ${kb.diagnosis} ${kb.etiology}<br><br>`;
-                        responseHTML += `<b>Siguiente paso:</b> ¿Podrías explicar por qué descartamos un origen puramente neurológico en este caso concreto?`;
-                    } else {
-                        responseHTML += `⚠️ <b>Falta Evidencia:</b> Tu etiqueta es correcta, pero no citas el texto.<br>`;
-                        responseHTML += `<b>Pregunta Guía:</b> Busca en el caso palabras como "gritos", "esfuerzo" o "frenillo". ¿Cuál aparece y qué subtipo indica?`;
-                    }
+                if (hasAny(t, rule.t1.keywords)) {
+                    responseHTML += `✅ <b>Diagnóstico:</b> ${rule.t1.feedbackOK}<br>`;
+                    if (hasAny(t, rule.t1.evidenceReq)) responseHTML += `👍 Has citado las evidencias clave.<br>`;
+                    else responseHTML += `⚠️ Cita las evidencias del texto (ej. ${rule.t1.evidenceReq[0]}).<br>`;
+                    responseHTML += `📚 <b>Teoría:</b> ${kb.diagnosis}`;
                 } else {
-                    responseHTML += `❌ <b>Revisión necesaria:</b> ${r.feedbackMiss}<br>`;
-                    responseHTML += `<b>Pista teórica:</b> Consulta la definición en '43 GEIN_UC3'.`;
+                    responseHTML += `❌ ${rule.t1.feedbackMiss}`;
+                }
+            } else if (taskId === 2) {
+                responseHTML += `Has listado indicadores. Compara con: <b>${rule.t2.keywords.join(", ")}</b>.`;
+            } else if (taskId === 3) {
+                if (hasAny(t, ["grupo", "clase"]) && hasAny(t, ["prevencion", "actividad"])) {
+                    responseHTML += `🌟 <b>Buen enfoque inclusivo y preventivo.</b>`;
+                } else {
+                    responseHTML += `⚠️ Asegura una actividad <b>inclusiva</b> (todo el grupo) y una <b>preventiva</b>.`;
                 }
             }
-
-            // --- TAREA 2: INDICADORES ---
-            else if (taskId === 2) {
-                const r = rule.t2;
-                // Conteo simple de items
-                const lines = text.split(/\n|,/).filter(l => l.length > 5);
-                const count = lines.length;
-
-                if (count < 4) {
-                    responseHTML += `📉 <b>Volumen insuficiente:</b> Detecto solo ${count} posibles indicadores. La tarea pide un análisis exhaustivo (mínimo 6).<br>`;
-                    responseHTML += `<b>Sugerencia:</b> Relee el caso buscando: 1) Síntomas físicos, 2) Conductas del niño, 3) Datos médicos/familiares.<br>`;
-                } else {
-                    const foundKw = r.keywords.filter(k => t.includes(k));
-                    responseHTML += `✅ <b>Análisis:</b> Has detectado ${count} indicadores. Coincido contigo en puntos clave como: <b>${foundKw.join(", ")}</b>.<br>`;
-                    responseHTML += `📚 <b>Evidencia UC3:</b> ${kb.indicators}<br><br>`;
-                    responseHTML += `<b>Reflexión:</b> De los indicadores que has listado, ¿cuáles son observables directamente en el aula y cuáles provienen de informes externos?`;
-                }
-            }
-
-            // --- TAREA 3: INTERVENCIÓN ---
-            else if (taskId === 3) {
-                const r = rule.t3;
-                const hasInclusive = hasAny(t, ["clase", "grupo", "todos", "asamblea", "aula"]);
-                const hasPreventive = hasAny(t, ["prevencion", "pautas", "habitos", "higiene"]);
-
-                if (hasInclusive && hasPreventive) {
-                    responseHTML += `🌟 <b>Excelente enfoque competencial:</b> Cumples los requisitos de Inclusión y Prevención.<br>`;
-                    responseHTML += `📚 <b>Respaldo Teórico:</b> ${kb.intervention}<br>`;
-                    responseHTML += `<b>Profundización:</b> ¿Cómo evaluarías si tu actividad inclusiva ha funcionado para ${uc3Rules[caseKey].label || "el alumno"}?`;
-                } else {
-                    responseHTML += `⚠️ <b>Ajuste Metodológico:</b><br>`;
-                    if (!hasInclusive) responseHTML += `- Falta la dimensión <b>Inclusiva</b> (actividad para todo el grupo clase).<br>`;
-                    if (!hasPreventive) responseHTML += `- Falta el enfoque <b>Preventivo</b> (evitar que empeore).<br>`;
-                    responseHTML += `<br><b>Referencia:</b> Revisa 'Intervención Temprana' en el PDF 43 GEIN_UC3.`;
-                }
-            } 
-            
-            else {
-                responseHTML = "Por favor, especifica si estás respondiendo a la Tarea 1, 2 o 3.";
-            }
-
             return responseHTML;
         }
 
-        // 6. FUNCIONES DE LA APP (VISUALIZACIÓN)
+        // DATOS DE LOS CASOS 43 GEIN COMPLETOS (RESTAURADOS)
         const casesData = {
-            marina: `<strong>Antecedentes:</strong> Marina (5 años). Voz grave, esfuerzo vocal.<br><strong>Síntomas:</strong> "Gallos", voz inaudible, rigidez muscular, dificultad con agudos.<br><strong>Factores:</strong> Suele gritar.<br><strong>Informe ORL:</strong> Nódulos vocales.`,
-            anais: `<strong>Antecedentes:</strong> Anaís (5 años). Lenguaje "infantilizado".<br><strong>Errores (Dislalias):</strong><br>- Seseo (sigarro)<br>- Rotacismo (latón)<br>- Omisión final (collá)<br><em>Nota: Errores sistemáticos de ejecución motriz.</em>`,
-            raul: `<strong>Situación:</strong> Raúl articula bien sonidos aislados pero falla en la secuencia.<br><strong>Errores Fonológicos (Bosch 1983):</strong><br>- Metátesis (milón/limón)<br>- Omisión sílabas átonas.<br><em>Clave: Problema de organización, no muscular.</em>`,
-            angel: `<strong>Relato:</strong> "Hola mi nombrle es Ángel... teno chinco años".<br><strong>Causa Orgánica:</strong> Anquiloglosia (frenillo lingual corto). Malformación física.`,
-            luis: `<strong>Relato:</strong> Habla lenta, costosa, monótona.<br><strong>Signos neurológicos:</strong> Debilidad y <strong>espasticidad</strong> (rigidez) en lengua y labios.`
+            marina: `
+                <h3>Caso de Marina (5 años) - Trastorno de la Voz</h3>
+                <p><strong>Antecedentes:</strong> Marina es una niña de 5 años. Su constitución física es robusta. Desde hace unos meses, la maestra y la familia notan cambios en su voz.</p>
+                <p><strong>Sintomatología observada:</strong>
+                <ul>
+                    <li>Voz grave para su edad y sexo.</li>
+                    <li>Frecuentes "gallos" y quiebres de voz al hablar.</li>
+                    <li>Momentos de afonía (pérdida total de voz) tras el recreo.</li>
+                    <li>Se observa mucha tensión y rigidez en el cuello al hablar (ingurgitación yugular).</li>
+                    <li>Dificultad para emitir tonos agudos (no puede cantar las canciones infantiles).</li>
+                </ul>
+                </p>
+                <p><strong>Factores de riesgo:</strong> Marina suele gritar mucho en el patio y en casa para imponerse a sus hermanos. No controla el volumen de su voz.</p>
+                <p><strong>Informe ORL:</strong> Se confirma la presencia de <strong>nódulos vocales</strong> bilaterales (kissing nodules) debidos al abuso vocal.</p>
+            `,
+            anais: `
+                <h3>Caso de Anaís (5 años) - Trastorno de Articulación (Habla)</h3>
+                <p><strong>Antecedentes:</strong> Anaís, 5 años. Desarrollo cognitivo normal. La maestra de Audición y Lenguaje comenta que su habla suena "infantilizada" para su edad.</p>
+                <p><strong>Sintomatología (Errores sistemáticos):</strong>
+                <ul>
+                    <li><strong>Seseo:</strong> Sustituye la /z/ por /s/ (dice "sigarro" en vez de cigarro, "sapato" en vez de zapato).</li>
+                    <li><strong>Rotacismo:</strong> Sustituye la /r/ fuerte por /l/ (dice "latón" en vez de ratón, "pelo" en vez de perro).</li>
+                    <li><strong>Omisión de consonantes finales:</strong> Dice "collá" en vez de collar.</li>
+                </ul>
+                </p>
+                <p><strong>Evaluación:</strong> Cuando se le pide repetir el sonido aislado /r/, no puede realizar la vibración lingual. El error es de ejecución motriz, no de percepción.</p>
+                <p><strong>Diagnóstico diferencial:</strong> No tiene problemas de comprensión ni de estructura de frase.</p>
+            `,
+            raul: `
+                <h3>Caso de Raúl (4 años) - Trastorno Fonológico</h3>
+                <p><strong>Antecedentes:</strong> Raúl tiene 4 años. Su habla es ininteligible para extraños. Los padres dicen que "tiene su propio idioma".</p>
+                <p><strong>Sintomatología:</strong>
+                <ul>
+                    <li>Raúl es capaz de articular todos los fonemas por separado (dice "rrr", "sss", "k").</li>
+                    <li>Sin embargo, al formar palabras, las desorganiza.</li>
+                    <li><strong>Metátesis:</strong> Dice "milón" en vez de limón, "cocholate" en vez de chocolate.</li>
+                    <li><strong>Omisión de sílabas átonas:</strong> Dice "pota" en vez de pelota.</li>
+                </ul>
+                </p>
+                <p><strong>Clave del caso:</strong> A diferencia de la dislalia, Raúl SÍ tiene la capacidad motriz para hacer los sonidos, pero su cerebro falla al secuenciarlos y organizarlos dentro de la palabra (Procesos de simplificación fonológica, Laura Bosch).</p>
+            `,
+            angel: `
+                <h3>Caso de Ángel (5 años) - Disglosia (Orgánica)</h3>
+                <p><strong>Relato del alumno:</strong> "Hola mi nombrle es Ángel... teno chinco años". Se observa dificultad clara para elevar la lengua.</p>
+                <p><strong>Exploración física:</strong>
+                <ul>
+                    <li>Al pedirle que saque la lengua, esta presenta forma de corazón (muesca central).</li>
+                    <li>No puede tocarse el paladar con la punta de la lengua con la boca abierta.</li>
+                    <li><strong>Causa Orgánica:</strong> Anquiloglosia (Frenillo sublingual corto).</li>
+                </ul>
+                </p>
+                <p><strong>Implicaciones:</strong> Su dificultad no es por falta de aprendizaje (dislalia) ni por organización mental (fonológico), sino por una barrera física (malformación en órgano fonoarticulatorio).</p>
+            `,
+            luis: `
+                <h3>Caso de Luís (6 años) - Disartria</h3>
+                <p><strong>Antecedentes:</strong> Luís tuvo hipoxia perinatal. Tiene diagnóstico de Parálisis Cerebral Infantil (PCI) leve.</p>
+                <p><strong>Sintomatología del habla:</strong>
+                <ul>
+                    <li>Habla lenta, costosa y monótona.</li>
+                    <li>Hipertonía (espasticidad) en los labios y lengua. Le cuesta moverlos con agilidad.</li>
+                    <li>Babeo ocasional (dificultad en control de saliva).</li>
+                    <li>Voz soplada por falta de control respiratorio.</li>
+                </ul>
+                </p>
+                <p><strong>Diagnóstico Diferencial:</strong> No es tartamudez (disfemia) porque la lentitud es por rigidez muscular, no por bloqueos. Es un trastorno de la ejecución motora de origen neurológico.</p>
+            `
         };
 
         const tasks = [
@@ -205,31 +390,129 @@
             { id: 3, title: "TAREA 3: Intervención", desc: "Propón 2 actividades. Requisito: 1 inclusiva (grupo) y 1 preventiva." }
         ];
 
+        // =================================================================
+        // 2. NUEVA IMPLEMENTACIÓN 01 MSEC (MÁSTER - IA INTELIGENTE)
+        // =================================================================
+        
+        const msecData = {
+            UA1: {
+                title: "UA1. Conceptos previos",
+                theory: "Evidencias UA1: Allport define personalidad como organización dinámica. Temperamento es biológico, Carácter es adquirido.",
+                sims: Array.from({length: 20}, (_, i) => ({
+                    id: `ua1-sim${i+1}`,
+                    title: `Simulación ${i+1}: Temperamento vs Carácter`,
+                    content: `<strong>Caso:</strong> Un alumno de 3º ESO reacciona impulsivamente (temperamento) pero luego reflexiona (carácter). <br><strong>Dilema:</strong> ¿Cómo gestionar su impulsividad sin anular su personalidad?`,
+                    solution: "La respuesta ideal debe diferenciar que el temperamento no se elige, pero el carácter se educa. La intervención debe enfocarse en técnicas de autocontrol (carácter) sin castigar la emoción primaria (temperamento)."
+                }))
+            },
+            UA2: {
+                title: "UA2. Desarrollo psicológico",
+                theory: "Evidencias UA2: Erikson (Identidad vs Confusión). Piaget (Pensamiento formal abstracto).",
+                sims: Array.from({length: 20}, (_, i) => ({
+                    id: `ua2-sim${i+1}`,
+                    title: `Simulación ${i+1}: Crisis de Identidad`,
+                    content: `<strong>Caso:</strong> Alumna cambia radicalmente de estilo y grupo de amigos. Baja rendimiento. <br><strong>Pregunta:</strong> ¿Es patológico o normativo según Erikson?`,
+                    solution: "Según Erikson, la crisis de identidad en la adolescencia es normativa y necesaria. No se debe patologizar, sino acompañar. El docente debe ser un referente estable y comprensivo."
+                }))
+            },
+            UA3: {
+                title: "UA3. Proceso E-A",
+                theory: "Evidencias UA3: Vygotsky (ZDP), Ausubel (Aprendizaje Significativo).",
+                sims: Array.from({length: 20}, (_, i) => ({
+                    id: `ua3-sim${i+1}`,
+                    title: `Simulación ${i+1}: Falta de motivación`,
+                    content: `<strong>Caso:</strong> El profesor explica sin conectar con los alumnos. <br><strong>Reto:</strong> Aplica el Aprendizaje Significativo de Ausubel.`,
+                    solution: "Para lograr aprendizaje significativo, debes conectar el nuevo contenido con los conocimientos previos del alumno (anclaje). Si no hay conexión, el aprendizaje es mecánico y se olvida."
+                }))
+            }
+        };
+
+        const msecBrain = {
+            process(simId, uaKey, userText) {
+                const text = normText(userText);
+                const sim = msecData[uaKey].sims.find(s => s.id === simId);
+                
+                // 1. Detección de petición de ayuda (IA Inteligente/Empática)
+                if (hasAny(text, ["no se", "no lo se", "ayuda", "dime la respuesta", "solucion", "no entiendo", "me rindo"])) {
+                    return `🤖 <b>Asistente IA:</b> ¡No te preocupes! Es normal tener dudas. Estamos aquí para aprender.<br><br>
+                            💡 <b>La solución pedagógica es esta:</b><br>
+                            ${sim.solution}<br><br>
+                            Intenta ahora reformularlo con tus propias palabras.`;
+                }
+
+                // 2. Evaluación normal (estilo NotebookLM)
+                let response = "";
+                const theory = msecData[uaKey].theory;
+                
+                if (hasAny(text, ["temperamento", "caracter", "erikson", "piaget", "vygotsky", "ausubel", "identidad"])) {
+                     response += "✅ <b>Muy bien fundamentado.</b> Has usado conceptos clave de la unidad.<br>";
+                     response += `📖 <b>Referencia:</b> ${theory}`;
+                } else {
+                     response += "🤔 Tu respuesta tiene sentido común, pero necesitamos usar el vocabulario técnico del Máster. <br>";
+                     response += "¿Podrías intentar relacionarlo con la teoría de la Unidad? (Si no sabes cómo, pídele ayuda a la IA).";
+                }
+                return response;
+            }
+        };
+
+        // =================================================================
+        // 3. APP PRINCIPAL (LÓGICA Y NAVEGACIÓN)
+        // =================================================================
         const data = {
             degrees: [
-               { id: '1', title: 'Máster Universitario en Formación del Profesorado', subjects: [] },
-               { id: '3', title: 'Grado Universitario en Educación Infantil', subjects: [{code:'43GEIN', name:'43GEIN_04_A_2026-27_Dificultades en el aprendizaje, trastornos de la comunicación y TDA / hiperactividad'}] }
+                { id: '1', title: 'Máster Universitario en Formación del Profesorado', subjects: [{code:'01MSEC', name:'01MSEC_Aprendizaje y desarrollo de la personalidad'}] },
+                { id: '3', title: 'Grado Universitario en Educación Infantil', subjects: [{code:'43GEIN', name:'43GEIN_04_A_2026-27_Dificultades en el aprendizaje, trastornos de la comunicación y TDA / hiperactividad'}] }
             ]
         };
 
         const app = {
-            history: [], 
+            viewStack: [], // Pila para el botón "Volver"
+            currentMsecUA: null,
+            currentMsecSim: null,
+
             show(id) {
+                // Ocultar todo
                 document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+                // Mostrar actual
                 document.getElementById(id).classList.remove('hidden');
+                
+                // Gestión de Breadcrumbs y Botón Volver
                 const bc = document.getElementById('breadcrumbs');
-                if (id === 'view-home') { bc.classList.add('hidden'); this.history = []; } 
-                else { bc.classList.remove('hidden'); this.updateBreadcrumbs(); }
+                if (id === 'view-home') {
+                    bc.classList.add('hidden');
+                    this.viewStack = []; // Reset pila en inicio
+                } else {
+                    bc.classList.remove('hidden');
+                    // Actualizar texto del breadcrumb (simple)
+                    document.getElementById('breadcrumb-text').innerText = ""; 
+                }
+
+                // Añadir a la pila si es una navegación nueva (no si venimos de goBack)
+                if (this.isGoingBack) {
+                    this.isGoingBack = false;
+                } else {
+                    if (this.viewStack.length === 0 || this.viewStack[this.viewStack.length-1] !== id) {
+                        this.viewStack.push(id);
+                    }
+                }
             },
-            updateBreadcrumbs() {
-                const bc = document.getElementById('breadcrumbs');
-                let text = "Inicio";
-                if (this.history.length > 0) text += " > " + this.history[this.history.length-1];
-                bc.innerText = "< " + text;
+
+            goHome() {
+                this.show('view-home');
             },
-            goHome() { this.renderDegrees(); },
+
+            goBack() {
+                if (this.viewStack.length > 1) {
+                    this.viewStack.pop(); // Quitar actual
+                    const prev = this.viewStack[this.viewStack.length - 1]; // Ver anterior
+                    this.isGoingBack = true; // Flag para no duplicar en pila
+                    this.show(prev);
+                } else {
+                    this.goHome();
+                }
+            },
+
             renderDegrees() {
-                this.history = [];
                 const g = document.getElementById('degrees-grid');
                 g.innerHTML = '';
                 data.degrees.forEach(d => {
@@ -237,40 +520,88 @@
                 });
                 this.show('view-home');
             },
+
             loadDegree(id) {
                 const d = data.degrees.find(x => x.id === id);
-                this.history = [d.title]; 
                 document.getElementById('degree-title').innerText = d.title;
                 const g = document.getElementById('subjects-grid');
                 g.innerHTML = '';
-                if(d.subjects.length === 0) g.innerHTML = "<p>No hay asignaturas disponibles en esta demo.</p>";
                 d.subjects.forEach(s => {
                     g.innerHTML += `<div class="card"><h3>${s.code}</h3><p>${s.name}</p><button class="btn" onclick="app.loadSubject('${s.name}')">Acceder</button></div>`;
                 });
                 this.show('view-subjects');
             },
+
             loadSubject(fullName) {
-                this.history.push("Asignatura");
+                // RUTA 01 MSEC
+                if (fullName.includes('01MSEC')) {
+                    this.show('view-msec-ua');
+                    return;
+                }
+                // RUTA 43 GEIN
                 if (fullName.includes('43GEIN')) {
                     document.getElementById('unit-subject-title').innerText = fullName;
                     const g = document.getElementById('units-grid');
-                    g.innerHTML = `<div class="card"><h3>Unidad Competencial 3</h3><p>Trastornos del Lenguaje.</p><button class="btn" onclick="app.loadUC3Menu()">Entrar</button></div>`;
+                    g.innerHTML = '';
+                    g.innerHTML += `<div class="card"><h3>Unidad Competencial 3</h3><p>Trastornos del Lenguaje.</p><button class="btn" onclick="app.loadUC3Menu()">Entrar</button></div>`;
                     this.show('view-units');
                 } else {
-                    alert("Solo disponible 43 GEIN UC3");
+                    alert("Asignatura sin contenido demo.");
                 }
             },
-            loadUC3Menu() { this.history.push("UC3"); this.show('view-uc3-menu'); },
-            loadUC3ActivityMenu() { this.history.push("Casos"); this.show('view-uc3-cases-menu'); },
+
+            // --- LÓGICA 01 MSEC ---
+            loadMsecSimList(uaKey) {
+                this.currentMsecUA = uaKey;
+                const ua = msecData[uaKey];
+                document.getElementById('msec-list-title').innerText = ua.title;
+                const grid = document.getElementById('msec-sim-grid');
+                grid.innerHTML = '';
+                ua.sims.forEach(sim => {
+                    grid.innerHTML += `<div class="card-sim" onclick="app.loadMsecSimDetail('${sim.id}')"><strong>${sim.title}</strong></div>`;
+                });
+                this.show('view-msec-list');
+            },
+
+            loadMsecSimDetail(simId) {
+                this.currentMsecSim = simId;
+                const ua = msecData[this.currentMsecUA];
+                const sim = ua.sims.find(s => s.id === simId);
+                
+                document.getElementById('msec-sim-title').innerText = sim.title;
+                document.getElementById('msec-sim-context').innerHTML = sim.content;
+                document.getElementById('msec-chat-msgs').innerHTML = `<div class="message msg-ai">Hola. Soy tu tutor IA. ¿Cómo resolverías este caso? Si no lo sabes, dímelo y te ayudaré.</div>`;
+                
+                this.show('view-msec-detail');
+            },
+
+            sendMsecMessage() {
+                const input = document.getElementById('msec-chat-input');
+                const text = input.value.trim();
+                if (!text) return;
+                const msgs = document.getElementById('msec-chat-msgs');
+                msgs.innerHTML += `<div class="message msg-user">${text}</div>`;
+                input.value = "";
+                msgs.scrollTop = msgs.scrollHeight;
+
+                // Respuesta IA Inteligente
+                setTimeout(() => {
+                    const response = msecBrain.process(this.currentMsecSim, this.currentMsecUA, text);
+                    msgs.innerHTML += `<div class="message msg-ai">${response}</div>`;
+                    msgs.scrollTop = msgs.scrollHeight;
+                }, 600);
+            },
+
+            // --- LÓGICA 43 GEIN ---
+            loadUC3Menu() { this.show('view-uc3-menu'); },
+            loadUC3ActivityMenu() { this.show('view-uc3-cases-menu'); },
             loadCase(caseKey) {
                 const names = { marina: "Caso de Marina", anais: "Caso de Anaís", raul: "Caso de Raúl", angel: "Caso de Ángel", luis: "Caso de Luís" };
-                this.history.push(names[caseKey]);
                 document.getElementById('case-title').innerText = names[caseKey];
-                document.getElementById('case-content').innerHTML = `<div class="case-text">${casesData[caseKey]}</div>`;
+                document.getElementById('case-content').innerHTML = casesData[caseKey]; // Datos COMPLETOS restaurados
                 
                 const tasksContainer = document.getElementById('case-tasks-container');
                 tasksContainer.innerHTML = '';
-                
                 tasks.forEach(task => {
                     const chatId = `chat-${caseKey}-${task.id}`;
                     tasksContainer.innerHTML += `
@@ -280,50 +611,56 @@
                             <div class="chat-box">
                                 <div class="chat-header"><span>💬 Tutor Virtual AulIA (UC3)</span></div>
                                 <div class="chat-messages" id="${chatId}">
-                                    <div class="message msg-ai">Hola. Soy tu tutor de UC3. He leído el caso. ¿Cuál es tu propuesta inicial basándote en el material de estudio?</div>
+                                    <div class="message msg-ai">Hola. He analizado el caso. ¿Cuál es tu propuesta?</div>
                                 </div>
                                 <div class="chat-input-area">
-                                    <input type="text" class="chat-input" id="input-${chatId}" placeholder="Escribe aquí..." onkeypress="if(event.key==='Enter') app.sendMessage('${caseKey}', ${task.id})">
+                                    <input type="text" class="chat-input" id="input-${chatId}" onkeypress="if(event.key==='Enter') app.sendMessage('${caseKey}', ${task.id})">
                                     <button class="chat-btn" onclick="app.sendMessage('${caseKey}', ${task.id})">Enviar</button>
                                 </div>
                             </div>
-                        </div>
-                    `;
+                        </div>`;
                 });
                 this.show('view-uc3-case-detail');
             },
+
             sendMessage(caseKey, taskId) {
                 const chatId = `chat-${caseKey}-${taskId}`;
                 const input = document.getElementById(`input-${chatId}`);
                 const text = input.value.trim();
-                if (!text) return;
-
+                if(!text) return;
                 const msgContainer = document.getElementById(chatId);
                 msgContainer.innerHTML += `<div class="message msg-user">${text}</div>`;
                 input.value = '';
-                msgContainer.scrollTop = msgContainer.scrollHeight;
-
-                const loadingId = `loading-${Date.now()}`;
-                msgContainer.innerHTML += `<div id="${loadingId}" class="message msg-ai" style="opacity:0.7">Consultando material UC3...</div>`;
-                msgContainer.scrollTop = msgContainer.scrollHeight;
-
+                
                 const state = tutorMemory.get(caseKey, taskId);
                 tutorMemory.pushTurn(state, "user", text);
 
                 setTimeout(() => {
-                    document.getElementById(loadingId).remove();
-                    // LLAMADA AL NUEVO MOTOR DE IA
                     const response = generateResponse(caseKey, taskId, text, state);
-                    
                     tutorMemory.pushTurn(state, "ai", response);
                     msgContainer.innerHTML += `<div class="message msg-ai">${response}</div>`;
                     msgContainer.scrollTop = msgContainer.scrollHeight;
-                }, 800);
+                }, 700);
             },
-            loadUC3PracticeLevels() { alert("Acceso restringido a actividad de evaluación."); },
-            loadUC3SimGrid(l) { },
-            loadSimulations(n) { }
+
+            loadUC3PracticeLevels() { this.show('view-uc3-levels'); },
+            loadUC3SimGrid(l) { 
+                document.getElementById('uc3-sim-title').innerText = "Nivel " + l;
+                const g = document.getElementById('uc3-sim-grid');
+                g.innerHTML = '';
+                for(let i=1; i<=20; i++) g.innerHTML += `<div class="card-sim">Simulación ${i}</div>`;
+                this.show('view-uc3-sims'); 
+            },
+            loadSimulations(n) { 
+                document.getElementById('level-title').innerText = "Nivel " + n;
+                const g = document.getElementById('simulations-grid');
+                g.innerHTML = '';
+                for(let i=1; i<=20; i++) g.innerHTML += `<div class="card-sim">Simulación ${i}</div>`;
+                this.show('view-simulations'); 
+            }
         };
 
         app.renderDegrees();
     </script>
+</body>
+</html>
