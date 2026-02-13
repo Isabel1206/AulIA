@@ -1,694 +1,219 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AulIA - Plataforma de Simulaciones</title>
-    <style>
-        :root {
-            --primary: #006A6A;
-            --bg-color: #FFFFFF;
-            --card-bg: #F8F9FA;
-            --text-main: #212529;
-            --radius: 12px;
-            --font-family: 'Segoe UI', sans-serif;
-            --chat-user: #e3f2fd;
-            --chat-ai: #f1f8e9;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: var(--font-family); background-color: var(--bg-color); color: var(--text-main); }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-
-        header { padding: 40px 20px; text-align: center; }
-        .logo-container { margin-bottom: 20px; display: flex; justify-content: center; }
-        .logo-img { max-width: 300px; height: auto; }
-        .hero-desc { max-width: 700px; margin: 20px auto; font-size: 1.1rem; color: #555; }
-
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; padding: 20px 0; }
-        .sim-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; padding: 20px 0; }
-
-        .card { 
-            background: var(--card-bg); 
-            padding: 30px; 
-            border-radius: var(--radius); 
-            border: 1px solid #eee;
-            transition: 0.3s;
-            display: flex; flex-direction: column; justify-content: space-between;
-        }
-        .card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-        .card h3 { color: var(--primary); margin-bottom: 10px; font-size: 1.2rem; }
-        .card p { font-size: 0.95rem; color: #444; margin-bottom: 15px; }
-
-        .case-container {
-            background: #fff; padding: 30px; border-radius: var(--radius);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px;
-            border-left: 5px solid var(--primary);
-        }
-        .case-text { font-size: 1.05rem; line-height: 1.6; color: #333; white-space: pre-line; }
-        .case-text ul { margin-left: 20px; margin-top: 10px; }
-
-        .task-block { margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px; }
-        .task-title { font-weight: bold; color: var(--primary); font-size: 1.1rem; margin-bottom: 10px; }
-        .task-desc { margin-bottom: 15px; color: #555; }
-
-        .chat-box {
-            background: #fff; border: 1px solid #ddd; border-radius: 8px;
-            margin-top: 15px; display: flex; flex-direction: column; overflow: hidden;
-        }
-        .chat-header { 
-            background: #f4f4f4; padding: 10px 15px; font-weight: bold; color: var(--primary);
-            border-bottom: 1px solid #ddd;
-        }
-        .chat-messages {
-            height: 300px; overflow-y: auto; padding: 15px; background: #fafafa;
-            display: flex; flex-direction: column; gap: 10px;
-        }
-        .message { padding: 10px 15px; border-radius: 12px; max-width: 85%; font-size: 0.95rem; line-height: 1.4; }
-        .msg-user { align-self: flex-end; background-color: var(--chat-user); color: #004d4d; border-bottom-right-radius: 2px; }
-        .msg-ai { align-self: flex-start; background-color: var(--chat-ai); color: #2e7d32; border-bottom-left-radius: 2px; border: 1px solid #c8e6c9; }
-
-        .chat-input-area { display: flex; gap: 10px; padding: 10px; background: #fff; border-top: 1px solid #eee; }
-        .chat-input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
-        .chat-btn { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; }
-        .card-sim { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 20px; text-align: center; color: #555; cursor: default; }
-        .card-ia { background: #e6fcfc; border: 2px dashed var(--primary); cursor: pointer; color: var(--primary); font-weight: bold; }
-        .btn { background: var(--primary); color: white; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; width: 100%; margin-top: auto; }
-        .hidden { display: none; }
-        .breadcrumbs { margin: 20px 0; color: var(--primary); cursor: pointer; font-size: 0.9rem; }
-    </style>
-</head>
-<body>
-
-    <header>
-        <div class="container">
-            <div class="logo-container">
-                <img src="logo.png" alt="Logo AulIA" class="logo-img" onerror="this.style.display='none'; document.getElementById('alt-logo').style.display='block'">
-                <h1 id="alt-logo" style="display:none; color:var(--primary); font-size:2.5rem;">AulIA</h1>
-            </div>
-            <p class="hero-desc">Plataforma de simulaciones educativas basada en IA generativa. Practica la toma de decisiones y la reflexión docente en entornos profesionales seguros.</p>
-        </div>
-    </header>
-
-    <div class="container">
-        <div id="breadcrumbs" class="breadcrumbs hidden" onclick="app.goHome()"> Inicio </div>
+// --- CEREBRO IA: TUTOR UC3 (ESTILO NOTEBOOKLM) ---
         
-        <section id="view-home"><div class="grid" id="degrees-grid"></div></section>
-        
-        <section id="view-subjects" class="hidden">
-            <h2 id="degree-title" style="margin-bottom:20px; color:var(--primary)"></h2>
-            <div class="grid" id="subjects-grid"></div>
-        </section>
+        // 1. BASE DE CONOCIMIENTO (Citas textuales de los documentos adjuntos)
+        const knowledgeBase = {
+            general: {
+                scope: "Evidencia: 'UC3 - Trastornos de la Comunicación'. Mi ámbito es únicamente la detección e intervención educativa en alteraciones del lenguaje oral en Educación Infantil."
+            },
+            marina: {
+                diagnosis: "Disfonía (Trastorno de la voz). Evidencia: 'UC3 - Trastornos de la Comunicación'. Afecta a tono, timbre e intensidad.",
+                etiology: "Disfonía Funcional por abuso vocal (gritos) que deriva en lesión orgánica (nódulos). Evidencia: Informe ORL citado en el caso.",
+                indicators: "Indicadores clave: Esfuerzo vocal, 'gallos', voz grave para su edad, rigidez muscular. (Ref: 'Signos de riesgo', 43 GEIN UC3).",
+                intervention: "Intervención: Higiene vocal, relajación y reeducación respiratoria. Evidencia: 'Pautas de higiene vocal' (Material de estudio UC3)."
+            },
+            anais: {
+                diagnosis: "Dislalia (Trastorno fonético). Evidencia: '43 GEIN UC3 - Alteraciones del Lenguaje'. Errores motrices sistemáticos.",
+                details: "Tipos de error: Sustitución (seseo), Omisión (final de palabra), Simplificación. No es fonológico porque falla la ejecución motriz.",
+                intervention: "Actividades: Praxias bucofonatorias, soplo y discriminación auditiva. Evidencia: 'Vídeos sobre PRAXIAS' y 'Ejercicios de estimulación' (Material UC3)."
+            },
+            raul: {
+                diagnosis: "Trastorno Fonológico (Retraso del habla). Evidencia: '43 GEIN UC3'. Articula bien aisladamente pero falla en la secuencia.",
+                details: "Procesos de simplificación (Laura Bosch, 1983): Metátesis, omisiones de sílabas átonas. Problema de organización mental del sonido.",
+                intervention: "Actividades: Conciencia fonológica, rimas, segmentación silábica. Evidencia: 'Intervención temprana' (Material UC3)."
+            },
+            angel: {
+                diagnosis: "Disglosia (Trastorno orgánico). Evidencia: 'UC3 - Trastornos de la Comunicación'. Alteración por malformación en órganos del habla.",
+                details: "Causa: Anquiloglosia (frenillo lingual corto). Impide la articulación física.",
+                intervention: "Enfoque: No forzar articulación imposible sin valoración médica previa. Trabajo de compensación y autoestima."
+            },
+            luis: {
+                diagnosis: "Disartria (Componente neurológico). Evidencia: 'DSM-5' / 'UC3'. Debilidad y espasticidad muscular.",
+                redFlag: "No confundir con Disfemia. La lentitud y tono bajo son por la espasticidad, no por bloqueos de fluidez.",
+                intervention: "Intervención: SAAC (si fuera necesario), relajación, trabajo multidisciplinar con fisioterapia."
+            }
+        };
 
-        <section id="view-levels" class="hidden">
-            <h2 id="subject-title" style="margin-bottom:20px; color:var(--primary)"></h2>
-            <div class="grid">
-                <div class="card"><h3>Nivel 1</h3><button class="btn" onclick="app.loadSimulations(1)">Acceder</button></div>
-                <div class="card"><h3>Nivel 2</h3><button class="btn" onclick="app.loadSimulations(2)">Acceder</button></div>
-                <div class="card"><h3>Nivel 3</h3><button class="btn" onclick="app.loadSimulations(3)">Acceder</button></div>
-            </div>
-        </section>
-
-        <section id="view-units" class="hidden">
-            <h2 id="unit-subject-title" style="margin-bottom:20px; color:var(--primary)"></h2>
-            <p style="margin-bottom:20px;">Selecciona la Unidad Competencial:</p>
-            <div class="grid" id="units-grid"></div>
-        </section>
-
-        <section id="view-uc3-menu" class="hidden">
-            <h2 style="margin-bottom:20px; color:var(--primary)">Unidad Competencial 3</h2>
-            <div class="grid">
-                <div class="card">
-                    <h3>Actividad de la Unidad Competencial 3</h3>
-                    <p>Resolución de casos prácticos evaluables.</p>
-                    <button class="btn" onclick="app.loadUC3ActivityMenu()">Acceder</button>
-                </div>
-                <div class="card">
-                    <h3>Práctica con simulaciones</h3>
-                    <p>Entrenamiento práctico con diferentes niveles.</p>
-                    <button class="btn" onclick="app.loadUC3PracticeLevels()">Acceder</button>
-                </div>
-            </div>
-        </section>
-
-        <section id="view-uc3-cases-menu" class="hidden">
-            <h2 style="margin-bottom:20px; color:var(--primary)">Selección de Caso de Estudio</h2>
-            <div class="grid">
-                <div class="card"><h3>Caso de Marina</h3><button class="btn" onclick="app.loadCase('marina')">Acceder</button></div>
-                <div class="card"><h3>Caso de Anaís</h3><button class="btn" onclick="app.loadCase('anais')">Acceder</button></div>
-                <div class="card"><h3>Caso de Raúl</h3><button class="btn" onclick="app.loadCase('raul')">Acceder</button></div>
-                <div class="card"><h3>Caso de Ángel</h3><button class="btn" onclick="app.loadCase('angel')">Acceder</button></div>
-                <div class="card"><h3>Caso de Luís</h3><button class="btn" onclick="app.loadCase('luis')">Acceder</button></div>
-            </div>
-        </section>
-
-        <section id="view-uc3-case-detail" class="hidden">
-            <h2 id="case-title" style="margin-bottom:20px; color:var(--primary)"></h2>
-            <div id="case-content" class="case-container"></div>
-            <div id="case-tasks-container"></div>
-        </section>
-
-        <section id="view-uc3-levels" class="hidden">
-            <h2 style="margin-bottom:20px; color:var(--primary)">UC3 - Práctica con simulaciones</h2>
-            <div class="grid">
-                <div class="card"><h3>Nivel 1 (Fácil)</h3><p>Casos guiados, menor complejidad.</p><button class="btn" onclick="app.loadUC3SimGrid(1)">Acceder</button></div>
-                <div class="card"><h3>Nivel 2 (Intermedio)</h3><p>Casos con más variables y decisiones.</p><button class="btn" onclick="app.loadUC3SimGrid(2)">Acceder</button></div>
-                <div class="card"><h3>Nivel 3 (Difícil)</h3><p>Casos complejos, dilemas.</p><button class="btn" onclick="app.loadUC3SimGrid(3)">Acceder</button></div>
-            </div>
-        </section>
-
-        <section id="view-uc3-sims" class="hidden">
-            <h2 id="uc3-sim-title" style="margin-bottom:20px; color:var(--primary)"></h2>
-            <div id="uc3-sim-grid" class="sim-grid"></div>
-        </section>
-
-        <section id="view-simulations" class="hidden">
-            <h2 id="level-title" style="margin-bottom:20px; color:var(--primary)"></h2>
-            <div id="simulations-grid" class="sim-grid"></div>
-        </section>
-    </div>
-
-    <script>
-        // --- CEREBRO IA (ENTRENAMIENTO TEÓRICO: UC3 TRASTORNOS DE LA COMUNICACIÓN) ---
-        // Este módulo gestiona la evaluación pedagógica basada en los documentos oficiales.
-        //
-        // MEJORA CLAVE (para evitar repetición):
-        // 1) La IA usa MEMORIA por chat (caso+tarea) para no repetir las mismas ideas.
-        // 2) La IA responde SIEMPRE sobre lo que el alumno ha escrito (extrae pistas del texto).
-        // 3) La IA da retroalimentación en 3 pasos: (a) lo que has dicho, (b) ajuste teórico, (c) siguiente paso (una sola pregunta).
-        // 4) La IA diferencia Tarea 1 / 2 / 3, así no devuelve el mismo argumento en todas.
+        // 2. MEMORIA DEL TUTOR
         const tutorMemory = {
             chats: {},
-
             _mkKey(caseKey, taskId) { return `${caseKey}::${taskId}`; },
-
             get(caseKey, taskId) {
                 const k = this._mkKey(caseKey, taskId);
                 if (!this.chats[k]) {
-                    this.chats[k] = {
-                        usedSnippets: new Set(),   // ids de ideas ya usadas (para no repetir)
-                        usedTags: new Set(),       // etiquetas semánticas ya trabajadas
-                        turns: []                  // historial simple (texto usuario y tipo)
-                    };
+                    this.chats[k] = { usedSnippets: new Set(), turns: [] };
                 }
                 return this.chats[k];
             },
-
-            useSnippet(state, id, html) {
-                if (state.usedSnippets.has(id)) return "";
-                state.usedSnippets.add(id);
-                return html;
-            },
-
-            useTag(state, tag) {
-                if (state.usedTags.has(tag)) return false;
-                state.usedTags.add(tag);
-                return true;
-            },
-
             pushTurn(state, who, text) {
                 state.turns.push({ who, text, ts: Date.now() });
-                if (state.turns.length > 12) state.turns.shift(); // límite simple
-            }
+            },
+            hasUsed(state, id) { return state.usedSnippets.has(id); },
+            markUsed(state, id) { state.usedSnippets.add(id); }
         };
 
-        // --- Helpers: normalización y detección ---
+        // 3. UTILIDADES DE TEXTO
         function normText(s) {
-            return (s || "")
-                .toLowerCase()
-                .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '')
-                .replace(/\s+/g, ' ')
-                .trim();
+            return (s || "").toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
         }
-
         function hasAny(t, arr) { return arr.some(w => t.includes(w)); }
-        function hasAll(t, arr) { return arr.every(w => t.includes(w)); }
+        function excerpt(text, n=100) { return text.length > n ? text.slice(0, n) + "..." : text; }
 
-        function excerpt(text, n=140) {
-            const s = (text || "").trim();
-            if (s.length <= n) return s;
-            return s.slice(0, n).trim() + "…";
-        }
-
-        function countListItems(text) {
-            // cuenta aproximada de ítems si el alumno escribe con:
-            // - viñetas, saltos de línea, numeración o separa por comas
-            const raw = (text || "").trim();
-            if (!raw) return 0;
-
-            const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
-            const bulletLike = lines.filter(l => /^(\-|\*|\d+[\.\)]|•)/.test(l)).length;
-
-            if (bulletLike >= 2) return bulletLike;
-
-            // Si no hay viñetas claras, estimación por separadores
-            const parts = raw.split(/[,;]+/).map(p => p.trim()).filter(p => p.length >= 3);
-            return Math.min(Math.max(parts.length, 1), 20);
-        }
-
-        // --- Config UC3 (solo lo que aplica a estos casos) ---
-        const uc3Configs = {
+        // 4. CONFIGURACIÓN DE CASOS (Reglas de evaluación pedagógica)
+        const uc3Rules = {
             marina: {
-                label: "Marina",
-                task1: {
-                    correctCore: ["disfonia"],
-                    lesion: ["nodulo", "nodulos"],
-                    functionalBase: ["abuso vocal", "mal uso", "sobreesfuerzo", "hiperfunc", "higiene vocal", "grita", "gritar"],
-                    evidence: ["voz grave", "gallo", "gallos", "inaudible", "forzada", "esfuerzo", "agudos", "cantar", "rigidez", "tono elevado", "fibroscopia", "orl"],
-                    redFlags: ["cirugia", "operar", "quirurg", "farmac", "medicacion"],
-                    wrongDx: ["disartria", "afasia", "tel", "disfasia", "neurolog"]
+                t1: {
+                    keywords: ["disfonia", "trastorno de la voz"],
+                    evidenceReq: ["nodulo", "gritos", "esfuerzo"],
+                    feedbackOK: "Correcto. Identificas la **Disfonía** (alteración de la voz).",
+                    feedbackMiss: "Revisa el concepto. ¿Es un problema de articulación (habla) o de emisión (voz)? Fíjate en la 'ronquera' y los 'gallos'."
                 },
-                task2: {
-                    indicators: [
-                        { id:"gritos", label:"Abuso vocal (suele gritar)", keys:["grita","gritar","gritos","gritando"] },
-                        { id:"esfuerzo", label:"Esfuerzo vocal al hablar", keys:["esfuerzo","forzada","forzado","tension","hiperfunc"] },
-                        { id:"voz_grave", label:"Voz grave para su edad", keys:["voz grave","grave"] },
-                        { id:"agudos", label:"Dificultad para emitir agudos / cantar", keys:["agudos","cantar","le cuesta cantar"] },
-                        { id:"gallos", label:"Alteraciones fonatorias: 'gallos'", keys:["gallo","gallos"] },
-                        { id:"inaudible", label:"Episodios de voz inaudible", keys:["inaudible","no se oye","no audible"] },
-                        { id:"rigidez", label:"Rigidez / tono elevado en musculatura superior", keys:["rigidez","tono elevado","hipertonia","musculatura superior"] },
-                        { id:"nodulos", label:"Nódulos vocales confirmados por ORL", keys:["nodulo","nodulos","orl","fibroscopia","nasolaringea"] }
-                    ]
+                t2: {
+                    minIndicators: 6,
+                    keywords: ["grita", "esfuerzo", "voz grave", "agudos", "gallos", "inaudible", "rigidez", "nodulos"],
                 },
-                task3: {
-                    must2: true,
-                    inclusiveKeys: ["todo el grupo", "grupo clase", "aula", "asamblea", "toda la clase", "rutina de aula"],
-                    preventiveKeys: ["prevencion", "higiene vocal", "pautas", "habitos", "cuidar la voz"],
-                    activityKeys: ["juego", "actividad", "dinamica", "rutina", "cuento", "cartel", "registro", "semáforo", "semaforo"]
+                t3: {
+                    req: ["higiene vocal", "respiracion", "relajacion"],
+                    inclusive: ["semáforo", "cartel", "cuento", "rutina"]
                 }
             },
-
-            anais: {
-                label: "Anaís",
-                task1: {
-                    correctCore: ["dislalia"],
-                    subtype: ["fonet", "articul", "punto de articulacion", "praxias"],
-                    evidence: ["seseo","rotacismo","omision","sinfones","asimilacion","coalescencia"],
-                    redFlags: ["neurolog","cerebral","disartria"],
-                    wrongDx: ["fonologico", "tel", "disfasia"]
-                },
-                task2: { indicators: [] },
-                task3: { must2: true, inclusiveKeys: ["grupo clase","aula"], preventiveKeys: ["prevencion"], activityKeys: ["praxias","soplo","discriminacion","juego"] }
+            anais: { // Dislalia
+                t1: {
+                    keywords: ["dislalia"],
+                    evidenceReq: ["seseo", "rotacismo", "omision"],
+                    feedbackOK: "Exacto. Es una **Dislalia**. El origen es funcional/motriz, no neurológico.",
+                    feedbackMiss: "Cuidado. ¿El fallo es mental (organización) o motriz (ejecución)? Fíjate que comete el error siempre (sistemático)."
+                }
             },
-
-            raul: {
-                label: "Raúl",
-                task1: {
-                    correctCore: ["fonologico", "trastorno fonologico"],
-                    evidence: ["metatesis","inversion","omision","estructura","secuencia","bosch","simplificacion"],
-                    redFlags: ["frenillo","musc", "praxias", "soplo"],
-                    wrongDx: ["dislalia", "disglosia"]
-                },
-                task2: { indicators: [] },
-                task3: { must2: true, inclusiveKeys: ["grupo clase","aula"], preventiveKeys: ["prevencion"], activityKeys: ["conciencia fonologica","segmentacion","rimas","silabas"] }
+            raul: { // Fonológico
+                t1: {
+                    keywords: ["fonologico", "retraso del habla"],
+                    evidenceReq: ["secuencia", "estructura", "bosch"],
+                    feedbackOK: "Bien visto. Es un **Trastorno Fonológico**. Articula bien sonidos sueltos, pero falla en la palabra.",
+                    feedbackMiss: "Analiza esto: Si puede decir el sonido aislado pero falla en la frase, ¿es muscular (dislalia) o mental (fonológico)?"
+                }
             },
-
-            angel: {
-                label: "Ángel",
-                task1: {
-                    correctCore: ["disglosia"],
-                    evidence: ["frenillo","anquiloglosia","malformacion"],
-                    redFlags: ["solo logopedia","solo ejercicios"],
-                    wrongDx: ["dislalia funcional", "fonologico"]
-                },
-                task2: { indicators: [] },
-                task3: { must2: true, inclusiveKeys: ["grupo clase","aula"], preventiveKeys: ["prevencion"], activityKeys: ["apoyo emocional","convivencia","respeto"] }
+            angel: { // Disglosia
+                t1: {
+                    keywords: ["disglosia"],
+                    evidenceReq: ["frenillo", "anquiloglosia", "organico"],
+                    feedbackOK: "Correcto. Es una **Disglosia** debido a la alteración orgánica (frenillo).",
+                    feedbackMiss: "Fíjate en la 'información familiar'. Hay una causa física en la lengua. Eso descarta la dislalia funcional."
+                }
             },
-
-            luis: {
-                label: "Luís",
-                task1: {
-                    correctCore: ["disartria"],
-                    evidence: ["espasticidad","debilidad","monotono","tono bajo","lenta","rigidez"],
-                    redFlags: ["solo tartamudez","solo disfemia"],
-                    wrongDx: ["disfemia", "tartamudeo"]
-                },
-                task2: { indicators: [] },
-                task3: { must2: true, inclusiveKeys: ["grupo clase","aula"], preventiveKeys: ["prevencion"], activityKeys: ["derivacion","equipo","apoyos"] }
+            luis: { // Disartria
+                t1: {
+                    keywords: ["disartria"],
+                    evidenceReq: ["espasticidad", "neurologico", "tono bajo"],
+                    feedbackOK: "Acertado. La **Disartria** implica debilidad muscular de origen neurológico.",
+                    feedbackMiss: "No es solo tartamudez. Lee la nota sobre 'espasticidad'. Eso indica daño neurológico, no solo fluidez."
+                }
             }
         };
 
-        function buildFeedbackHeader(text) {
-            const e = excerpt(text, 160);
-            return `He leído tu respuesta: <i>“${e || "…" }”</i><br><br>`;
-        }
-
-        function buildNextStepQuestion(state, id, qHtml) {
-            // una sola pregunta final, sin repetir preguntas previas
-            const out = tutorMemory.useSnippet(state, id, `<b>Pregunta de avance:</b> ${qHtml}`);
-            return out || `<b>Pregunta de avance:</b> ¿Qué evidencia concreta del caso usarías para reforzar tu argumento?`;
-        }
-
-        function task1Engine(caseKey, text, state) {
-            const cfg = uc3Configs[caseKey]?.task1;
+        // 5. MOTOR DE RESPUESTA (ENGINE)
+        function generateResponse(caseKey, taskId, text, state) {
             const t = normText(text);
+            const rule = uc3Rules[caseKey];
+            const kb = knowledgeBase[caseKey];
+            let responseHTML = "";
 
-            const parts = [];
-            parts.push(buildFeedbackHeader(text));
+            // CABECERA DE FEEDBACK
+            responseHTML += `<i>He analizado tu respuesta: "${excerpt(text)}"</i><br><br>`;
 
-            // Red flags: intervención invasiva / medicación
-            if (cfg?.redFlags && hasAny(t, cfg.redFlags)) {
-                const s = tutorMemory.useSnippet(
-                    state,
-                    `${caseKey}_t1_redflag_invasiva`,
-                    `⚠️ <b>Ajuste:</b> Estás proponiendo una vía invasiva/medicada. En este tipo de casos, antes se prioriza identificar el tipo de trastorno y la intervención educativa/logopédica coherente con la causa del caso.<br><br>`
-                );
-                if (s) parts.push(s);
-            }
+            // --- TAREA 1: IDENTIFICACIÓN ---
+            if (taskId === 1) {
+                const r = rule.t1;
+                // A. Check Red Flags (Médico/Invasivo)
+                if (hasAny(t, ["cirugia", "operar", "medicamento", "farmaco"])) {
+                    return responseHTML + `⚠️ <b>Alerta de Rol:</b> Como maestros de GEIN, nuestra competencia NO es clínica ni quirúrgica. <br><b>Evidencia UC3:</b> Debemos centrarnos en la prevención y reeducación educativa. Reenfoca tu respuesta hacia el aula.`;
+                }
 
-            // Diagnóstico claramente equivocado (por etiqueta)
-            if (cfg?.wrongDx && hasAny(t, cfg.wrongDx)) {
-                const s = tutorMemory.useSnippet(
-                    state,
-                    `${caseKey}_t1_wrongdx`,
-                    `🛑 <b>Revisión conceptual:</b> En tu texto aparecen etiquetas que no encajan con las evidencias del caso. Relee la descripción y alinea tu diagnóstico con los datos observables y el informe aportado.<br><br>`
-                );
-                if (s) parts.push(s);
-            }
-
-            // Diagnóstico correcto (núcleo)
-            let mentionsCore = cfg?.correctCore ? hasAny(t, cfg.correctCore) : false;
-
-            // Para Marina: además, reforzar con lesión + base funcional
-            if (caseKey === "marina") {
-                const mentionsLesion = cfg?.lesion ? hasAny(t, cfg.lesion) : false;
-                const mentionsFunctional = cfg?.functionalBase ? hasAny(t, cfg.functionalBase) : false;
-
-                if (mentionsCore && mentionsLesion) {
-                    const s = tutorMemory.useSnippet(
-                        state,
-                        `marina_t1_ok_core`,
-                        `✅ <b>Bien orientado:</b> Nombras <b>disfonía</b> y conectas con los <b>nódulos</b>. Eso encaja con el informe ORL y con la sintomatología (esfuerzo vocal, “gallos”, dificultad con agudos).<br><br>`
-                    );
-                    if (s) parts.push(s);
-                } else if (mentionsLesion && !mentionsCore) {
-                    const s = tutorMemory.useSnippet(
-                        state,
-                        `marina_t1_missing_label`,
-                        `🔎 <b>Te falta afinar la etiqueta:</b> Has detectado la lesión (“nódulos”), pero falta nombrar el trastorno paraguas: <b>trastorno de la voz (disfonía)</b>.<br><br>`
-                    );
-                    if (s) parts.push(s);
-                } else if (!mentionsLesion && mentionsCore) {
-                    const s = tutorMemory.useSnippet(
-                        state,
-                        `marina_t1_missing_lesion`,
-                        `🔎 <b>Te falta incorporar una evidencia clave:</b> Si hablas de disfonía, apóyate en el dato clínico del caso: el informe ORL identifica <b>nódulos vocales</b>.<br><br>`
-                    );
-                    if (s) parts.push(s);
+                // B. Check Diagnóstico Core
+                if (hasAny(t, r.keywords)) {
+                    responseHTML += `✅ <b>Diagnóstico:</b> ${r.feedbackOK}<br>`;
+                    
+                    // C. Check Evidencias
+                    if (hasAny(t, r.evidenceReq)) {
+                        responseHTML += `👍 <b>Evidencias:</b> Has citado correctamente elementos del texto.<br>`;
+                        responseHTML += `📚 <b>Fundamentación Teórica:</b> ${kb.diagnosis} ${kb.etiology}<br><br>`;
+                        responseHTML += `<b>Siguiente paso:</b> ¿Podrías explicar por qué descartamos un origen puramente neurológico en este caso concreto?`;
+                    } else {
+                        responseHTML += `⚠️ <b>Falta Evidencia:</b> Tu etiqueta es correcta, pero no citas el texto.<br>`;
+                        responseHTML += `<b>Pregunta Guía:</b> Busca en el caso palabras como "gritos", "esfuerzo" o "frenillo". ¿Cuál aparece y qué subtipo indica?`;
+                    }
                 } else {
-                    const s = tutorMemory.useSnippet(
-                        state,
-                        `marina_t1_prompt_core`,
-                        `Para resolver la Tarea 1, escribe tu hipótesis con esta estructura: <b>(1) trastorno</b>, <b>(2) subtipo</b> y <b>(3) 2–3 evidencias del texto</b>.<br><br>`
-                    );
-                    if (s) parts.push(s);
+                    responseHTML += `❌ <b>Revisión necesaria:</b> ${r.feedbackMiss}<br>`;
+                    responseHTML += `<b>Pista teórica:</b> Consulta la definición en '43 GEIN_UC3'.`;
                 }
+            }
 
-                if (mentionsCore && mentionsLesion && !mentionsFunctional) {
-                    const s = tutorMemory.useSnippet(
-                        state,
-                        `marina_t1_subtype_needed`,
-                        `💡 <b>Subtipo:</b> Te falta justificar la base funcional del problema (p. ej., <i>abuso vocal</i> por gritos) que desemboca en una lesión. Ese matiz mejora la precisión del subtipo.<br><br>`
-                    );
-                    if (s) parts.push(s);
-                }
-            } else {
-                // Otros casos: si menciona núcleo + evidencias
-                if (mentionsCore) {
-                    const s = tutorMemory.useSnippet(
-                        state,
-                        `${caseKey}_t1_ok`,
-                        `✅ <b>Bien:</b> Nombras la categoría principal. Ahora refuérzala citando 2 evidencias literales del caso (sustituciones, omisiones, signos orgánicos, etc.).<br><br>`
-                    );
-                    if (s) parts.push(s);
+            // --- TAREA 2: INDICADORES ---
+            else if (taskId === 2) {
+                const r = rule.t2;
+                // Conteo simple de items
+                const lines = text.split(/\n|,/).filter(l => l.length > 5);
+                const count = lines.length;
+
+                if (count < 4) {
+                    responseHTML += `📉 <b>Volumen insuficiente:</b> Detecto solo ${count} posibles indicadores. La tarea pide un análisis exhaustivo (mínimo 6).<br>`;
+                    responseHTML += `<b>Sugerencia:</b> Relee el caso buscando: 1) Síntomas físicos, 2) Conductas del niño, 3) Datos médicos/familiares.<br>`;
                 } else {
-                    const s = tutorMemory.useSnippet(
-                        state,
-                        `${caseKey}_t1_prompt`,
-                        `Escribe tu hipótesis indicando <b>diagnóstico</b> + <b>subtipo</b> (si procede) + <b>evidencias</b> (mínimo 2) tomadas del texto del caso.<br><br>`
-                    );
-                    if (s) parts.push(s);
+                    const foundKw = r.keywords.filter(k => t.includes(k));
+                    responseHTML += `✅ <b>Análisis:</b> Has detectado ${count} indicadores. Coincido contigo en puntos clave como: <b>${foundKw.join(", ")}</b>.<br>`;
+                    responseHTML += `📚 <b>Evidencia UC3:</b> ${kb.indicators}<br><br>`;
+                    responseHTML += `<b>Reflexión:</b> De los indicadores que has listado, ¿cuáles son observables directamente en el aula y cuáles provienen de informes externos?`;
                 }
             }
 
-            // Pregunta final (una sola)
-            if (caseKey === "marina") {
-                parts.push(buildNextStepQuestion(
-                    state,
-                    `marina_t1_q`,
-                    `¿Qué dos evidencias exactas del caso usarías para justificar el <b>subtipo</b> (base funcional por abuso vocal + lesión) en una frase?`
-                ));
-            } else {
-                parts.push(buildNextStepQuestion(
-                    state,
-                    `${caseKey}_t1_q`,
-                    `¿Qué evidencia del texto es la más fuerte para justificar tu diagnóstico y por qué?`
-                ));
+            // --- TAREA 3: INTERVENCIÓN ---
+            else if (taskId === 3) {
+                const r = rule.t3;
+                const hasInclusive = hasAny(t, ["clase", "grupo", "todos", "asamblea", "aula"]);
+                const hasPreventive = hasAny(t, ["prevencion", "pautas", "habitos", "higiene"]);
+
+                if (hasInclusive && hasPreventive) {
+                    responseHTML += `🌟 <b>Excelente enfoque competencial:</b> Cumples los requisitos de Inclusión y Prevención.<br>`;
+                    responseHTML += `📚 <b>Respaldo Teórico:</b> ${kb.intervention}<br>`;
+                    responseHTML += `<b>Profundización:</b> ¿Cómo evaluarías si tu actividad inclusiva ha funcionado para ${uc3Rules[caseKey].label || "el alumno"}?`;
+                } else {
+                    responseHTML += `⚠️ <b>Ajuste Metodológico:</b><br>`;
+                    if (!hasInclusive) responseHTML += `- Falta la dimensión <b>Inclusiva</b> (actividad para todo el grupo clase).<br>`;
+                    if (!hasPreventive) responseHTML += `- Falta el enfoque <b>Preventivo</b> (evitar que empeore).<br>`;
+                    responseHTML += `<br><b>Referencia:</b> Revisa 'Intervención Temprana' en el PDF 43 GEIN_UC3.`;
+                }
+            } 
+            
+            else {
+                responseHTML = "Por favor, especifica si estás respondiendo a la Tarea 1, 2 o 3.";
             }
 
-            return parts.join('');
+            return responseHTML;
         }
 
-        function task2Engine(caseKey, text, state) {
-            const cfg = uc3Configs[caseKey]?.task2;
-            const t = normText(text);
-
-            const parts = [];
-            parts.push(buildFeedbackHeader(text));
-
-            if (!cfg || !cfg.indicators || cfg.indicators.length === 0) {
-                const s = tutorMemory.useSnippet(
-                    state,
-                    `${caseKey}_t2_generic`,
-                    `Para esta tarea, lista <b>mínimo 6</b> indicadores presentes en el caso (conductuales, observacionales y clínicos). Intenta que cada indicador esté ligado a una frase del caso.<br><br>`
-                );
-                if (s) parts.push(s);
-
-                parts.push(buildNextStepQuestion(
-                    state,
-                    `${caseKey}_t2_q`,
-                    `¿Puedes escribir 6 indicadores en viñetas y, al lado, la frase del caso que los respalda?`
-                ));
-                return parts.join('');
-            }
-
-            // Marina: comprobar cuántos indicadores menciona (de la lista esperada)
-            const mentioned = [];
-            const missing = [];
-
-            cfg.indicators.forEach(ind => {
-                if (hasAny(t, ind.keys)) mentioned.push(ind);
-                else missing.push(ind);
-            });
-
-            const approxCount = countListItems(text);
-            const sCount = tutorMemory.useSnippet(
-                state,
-                `marina_t2_count`,
-                `📌 <b>Revisión rápida:</b> En tu respuesta se aprecian aproximadamente <b>${approxCount}</b> ítems. En el caso, los indicadores más característicos se concentran en <b>abuso vocal</b>, <b>signos de disfonía</b> y <b>confirmación ORL</b>.<br><br>`
-            );
-            if (sCount) parts.push(sCount);
-
-            if (mentioned.length > 0) {
-                const ids = mentioned.map(m => `• ${m.label}`).join('<br>');
-                const s = tutorMemory.useSnippet(
-                    state,
-                    `marina_t2_what_you_got`,
-                    `✅ <b>Indicadores que has activado con tu texto:</b><br>${ids}<br><br>`
-                );
-                if (s) parts.push(s);
-            } else {
-                const s = tutorMemory.useSnippet(
-                    state,
-                    `marina_t2_none`,
-                    `🔎 <b>Te falta aterrizar indicadores del caso:</b> No detecto en tu texto referencias claras a los indicadores típicos (gritos, esfuerzo, “gallos”, agudos/canto, rigidez, nódulos).<br><br>`
-                );
-                if (s) parts.push(s);
-            }
-
-            // Sugerir faltantes, sin repetir
-            const newMissing = missing.filter(m => tutorMemory.useTag(state, `miss_${m.id}`));
-            if (newMissing.length > 0) {
-                const ids = newMissing.slice(0, 6).map(m => `• ${m.label}`).join('<br>');
-                const s = tutorMemory.useSnippet(
-                    state,
-                    `marina_t2_missing`,
-                    `🧩 <b>Para completar hasta 6–8 indicadores del caso, añade:</b><br>${ids}<br><br>`
-                );
-                if (s) parts.push(s);
-            }
-
-            parts.push(buildNextStepQuestion(
-                state,
-                `marina_t2_q`,
-                `De los indicadores que has listado, ¿cuál consideras el <b>factor desencadenante</b> y cuál el <b>signo clínico confirmado</b>?`
-            ));
-
-            return parts.join('');
-        }
-
-        function task3Engine(caseKey, text, state) {
-            const cfg = uc3Configs[caseKey]?.task3;
-            const t = normText(text);
-
-            const parts = [];
-            parts.push(buildFeedbackHeader(text));
-
-            const approxCount = countListItems(text);
-            const hasTwo = approxCount >= 2;
-
-            const hasInclusive = cfg?.inclusiveKeys ? hasAny(t, cfg.inclusiveKeys.map(k => normText(k))) : false;
-            const hasPreventive = cfg?.preventiveKeys ? hasAny(t, cfg.preventiveKeys.map(k => normText(k))) : false;
-            const hasActivity = cfg?.activityKeys ? hasAny(t, cfg.activityKeys.map(k => normText(k))) : false;
-
-            if (!hasTwo) {
-                const s = tutorMemory.useSnippet(
-                    state,
-                    `${caseKey}_t3_need_two`,
-                    `🧩 <b>Te falta cumplir el requisito:</b> La tarea pide <b>2 actividades</b>. Escríbelas separadas (Actividad 1 / Actividad 2) y concreta: objetivo, pasos y duración breve.<br><br>`
-                );
-                if (s) parts.push(s);
-            }
-
-            if (!hasInclusive) {
-                const s = tutorMemory.useSnippet(
-                    state,
-                    `${caseKey}_t3_need_inclusive`,
-                    `👥 <b>Inclusión:</b> Incluye al menos una actividad pensada para <b>todo el grupo clase</b> (no sólo intervención individual).<br><br>`
-                );
-                if (s) parts.push(s);
-            }
-
-            if (!hasPreventive) {
-                const s = tutorMemory.useSnippet(
-                    state,
-                    `${caseKey}_t3_need_preventive`,
-                    `🛡️ <b>Prevención:</b> Explicita que una de las actividades es <b>preventiva</b> (pautas/hábitos/rutinas) y qué riesgo intenta reducir.<br><br>`
-                );
-                if (s) parts.push(s);
-            }
-
-            if (!hasActivity) {
-                const s = tutorMemory.useSnippet(
-                    state,
-                    `${caseKey}_t3_need_concrete`,
-                    `🔧 <b>Concreción:</b> Añade una dinámica concreta (juego, rutina, registro, cuento, cartel, etc.) para que la actividad sea aplicable en el aula.<br><br>`
-                );
-                if (s) parts.push(s);
-            }
-
-            parts.push(buildNextStepQuestion(
-                state,
-                `${caseKey}_t3_q`,
-                `De tus dos actividades, ¿cuál es la <b>preventiva e inclusiva</b> y qué indicador del caso busca reducir?`
-            ));
-
-            return parts.join('');
-        }
-
-        function evaluateUC3(caseKey, taskId, text, state) {
-            // Derivador por tarea (para evitar que repita el mismo argumento siempre)
-            if (taskId === 1) return task1Engine(caseKey, text, state);
-            if (taskId === 2) return task2Engine(caseKey, text, state);
-            if (taskId === 3) return task3Engine(caseKey, text, state);
-            return "Interesante planteamiento. ¿Puedes concretar a qué tarea respondes (1, 2 o 3) y justificarlo con evidencias del caso?";
-        }
-
-        // --- CEREBRO IA por caso ---
-        const aiBrain = {
-            marina: {
-                evaluate: (text, taskId, state) => evaluateUC3("marina", taskId, text, state)
-            },
-            anais: {
-                evaluate: (text, taskId, state) => evaluateUC3("anais", taskId, text, state)
-            },
-            raul: {
-                evaluate: (text, taskId, state) => evaluateUC3("raul", taskId, text, state)
-            },
-            angel: {
-                evaluate: (text, taskId, state) => evaluateUC3("angel", taskId, text, state)
-            },
-            luis: {
-                evaluate: (text, taskId, state) => evaluateUC3("luis", taskId, text, state)
-            }
-        };
-
+        // 6. FUNCIONES DE LA APP (VISUALIZACIÓN)
         const casesData = {
-            marina: `
-                <strong>Antecedentes:</strong> Marina es una niña de 5 años que tiene una voz ligeramente grave en relación con su constitución y edad, y parece que realiza un gran esfuerzo vocal cuando habla.<br><br>
-                <strong>Observación:</strong> Le cuesta cantar y tiene dificultades para emitir sonidos agudos. Tiene también alteraciones fonatorias como "gallos", y en ocasiones produce sonidos inaudibles y muy forzados. Presenta una musculatura superior con un tono elevado, con rigidez.<br><br>
-                <strong>Factores:</strong> En cuanto a los factores predisponentes, es una niña que suele gritar, aunque no presenta afectaciones pulmonares ni un ambiente familiar excitado o excesivamente ruidoso.<br><br>
-                <strong>Informe Médico:</strong> El informe de la ORL mediante la fibroscopia nasolaríngea expone que se aprecian nódulos vocales.
-            `,
-            anais: `
-                <strong>Antecedentes:</strong> Anaïs es una niña de 5 años que presenta un lenguaje que la AL ha descrito como “infantilizado”.<br><br>
-                <strong>Alteraciones observadas (Dislalias):</strong>
-                <ul>
-                    <li>Seseo (sustitución de /c/ por /s/, por ejemplo, cigarro por sigarro, zapato por sapato).</li>
-                    <li>Rotacismo (sustitución del fonema /rr/ por /l/ o /r/, por ejemplo, ratón por latón).</li>
-                    <li>Omisión del sonido /r/ a final de palabra (collar por collá).</li>
-                    <li>Omisión del fonema /s/ en posición inversa (espada por epada).</li>
-                    <li>Simplificación de sinfones vibrantes y líquidos (globo por lobo, brazo por blazo).</li>
-                </ul>
-                <br><em>Nota: Los errores son sistemáticos y de ejecución motriz.</em>
-            `,
-            raul: `
-                <strong>Situación:</strong> Raúl articula bien aisladamente, pero falla en la secuencia.<br><br>
-                <strong>FONÉTICAMENTE:</strong> sabe y puede articular todos los fonemas (salvo algunos grupos complejos), pero...<br><br>
-                <strong>FONOLÓGICAMENTE:</strong> encontramos procesos de simplificación del habla según Laura Bosch (1983):
-                <ul>
-                    <li>Metátesis o inversión: /limón/ por /milón/.</li>
-                    <li>Omisiones de consonantes finales e iniciales.</li>
-                    <li>Omisión de sílabas átonas (/escoba/ por /coba/).</li>
-                </ul>
-                <br><em>Clave: El problema es de organización mental del sonido, no de ejecución muscular.</em>
-            `,
-            angel: `
-                <strong>Relato del alumno:</strong> “Hola mi nombrle es Ángel y teno chinco años… mis maestlas piensan que hablo así, ¡¡que ponque estoy mimado!!”<br><br>
-                <strong>Información familiar (CLAVE):</strong> Su padre nos dice que tiene una malformación del frenillo lingual (Anquiloglosia). Éste es demasiado corto, lo que le impide físicamente pronunciar ciertos fonemas.
-            `,
-            luis: `
-                <strong>Relato del alumno:</strong> “Hooollaaa mii nooombreee eess Luuuíísss...” (Habla lenta, costosa).<br><br>
-                <strong>Información familiar (Signos de Alerta):</strong> Su madre indica que:
-                <ul>
-                    <li>Es lento en el habla.</li>
-                    <li>Tono bajo y monótono.</li>
-                    <li>Muestra <strong>debilidad y espasticidad</strong> en un lado del cuerpo, lengua y labios.</li>
-                </ul>
-                <em>Nota: La espasticidad sugiere origen neurológico, no solo un problema de fluidez.</em>
-            `
+            marina: `<strong>Antecedentes:</strong> Marina (5 años). Voz grave, esfuerzo vocal.<br><strong>Síntomas:</strong> "Gallos", voz inaudible, rigidez muscular, dificultad con agudos.<br><strong>Factores:</strong> Suele gritar.<br><strong>Informe ORL:</strong> Nódulos vocales.`,
+            anais: `<strong>Antecedentes:</strong> Anaís (5 años). Lenguaje "infantilizado".<br><strong>Errores (Dislalias):</strong><br>- Seseo (sigarro)<br>- Rotacismo (latón)<br>- Omisión final (collá)<br><em>Nota: Errores sistemáticos de ejecución motriz.</em>`,
+            raul: `<strong>Situación:</strong> Raúl articula bien sonidos aislados pero falla en la secuencia.<br><strong>Errores Fonológicos (Bosch 1983):</strong><br>- Metátesis (milón/limón)<br>- Omisión sílabas átonas.<br><em>Clave: Problema de organización, no muscular.</em>`,
+            angel: `<strong>Relato:</strong> "Hola mi nombrle es Ángel... teno chinco años".<br><strong>Causa Orgánica:</strong> Anquiloglosia (frenillo lingual corto). Malformación física.`,
+            luis: `<strong>Relato:</strong> Habla lenta, costosa, monótona.<br><strong>Signos neurológicos:</strong> Debilidad y <strong>espasticidad</strong> (rigidez) en lengua y labios.`
         };
 
         const tasks = [
-            { id: 1, title: "TAREA 1: Identificación del trastorno", desc: "Identificar el posible trastorno y subtipo para el caso, haciendo referencia a evidencias del texto. Argumenta la respuesta basándote en los manuales de la asignatura." },
-            { id: 2, title: "TAREA 2: Indicadores de riesgo", desc: "Elaborar una lista con los indicadores de riesgo MÁS CARACTERÍSTICOS presentes en el caso (mínimo 6)." },
-            { id: 3, title: "TAREA 3: Propuesta de intervención", desc: "Describir 2 actividades adecuadas para trabajar tempranamente los indicadores descritos. <br><strong>REQUISITO:</strong> Al menos una actividad debe ser inclusiva (para todo el grupo clase) y preventiva." }
+            { id: 1, title: "TAREA 1: Diagnóstico", desc: "Identifica el trastorno y subtipo. Justifica con evidencias del texto y teoría UC3." },
+            { id: 2, title: "TAREA 2: Indicadores", desc: "Lista mínimo 6 indicadores de riesgo presentes en el texto." },
+            { id: 3, title: "TAREA 3: Intervención", desc: "Propón 2 actividades. Requisito: 1 inclusiva (grupo) y 1 preventiva." }
         ];
 
         const data = {
             degrees: [
-                { 
-                    id: '1', title: 'Máster Universitario en Formación del Profesorado', 
-                    subjects: [{code:'01MSEC', name:'01MSEC_Aprendizaje y desarrollo de la personalidad'}, {code:'03MSEC', name:'03MSEC_Sociedad, familia y educación'}] 
-                },
-                { 
-                    id: '2', title: 'Máster Universitario en Metodologías Activas y Digitales', 
-                    subjects: [{code:'02MADI', name:'02MADI_Habilidades Docentes Avanzadas para el Aprendizaje'}] 
-                },
-                { 
-                    id: '3', title: 'Grado Universitario en Educación Infantil', 
-                    subjects: [
-                        {code:'43GEIN', name:'43GEIN_04_A_2026-27_Dificultades en el aprendizaje, trastornos de la comunicación y TDA / hiperactividad'}, 
-                        {code:'8GEIN', name:'8GEIN_04_A_2026-27_Estimulación del lenguaje oral'}
-                    ] 
-                }
+               { id: '1', title: 'Máster Universitario en Formación del Profesorado', subjects: [] },
+               { id: '3', title: 'Grado Universitario en Educación Infantil', subjects: [{code:'43GEIN', name:'43GEIN_04_A_2026-27_Dificultades en el aprendizaje, trastornos de la comunicación y TDA / hiperactividad'}] }
             ]
         };
 
         const app = {
             history: [], 
-
             show(id) {
                 document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
                 document.getElementById(id).classList.remove('hidden');
@@ -696,65 +221,47 @@
                 if (id === 'view-home') { bc.classList.add('hidden'); this.history = []; } 
                 else { bc.classList.remove('hidden'); this.updateBreadcrumbs(); }
             },
-
             updateBreadcrumbs() {
                 const bc = document.getElementById('breadcrumbs');
                 let text = "Inicio";
                 if (this.history.length > 0) text += " > " + this.history[this.history.length-1];
                 bc.innerText = "< " + text;
             },
-
             goHome() { this.renderDegrees(); },
-
             renderDegrees() {
                 this.history = [];
                 const g = document.getElementById('degrees-grid');
                 g.innerHTML = '';
                 data.degrees.forEach(d => {
-                    g.innerHTML += `<div class="card"><h3>${d.title}</h3><p>Accede a las asignaturas disponibles.</p><button class="btn" onclick="app.loadDegree('${d.id}')">Ver Asignaturas</button></div>`;
+                    g.innerHTML += `<div class="card"><h3>${d.title}</h3><button class="btn" onclick="app.loadDegree('${d.id}')">Ver Asignaturas</button></div>`;
                 });
                 this.show('view-home');
             },
-
             loadDegree(id) {
                 const d = data.degrees.find(x => x.id === id);
                 this.history = [d.title]; 
                 document.getElementById('degree-title').innerText = d.title;
                 const g = document.getElementById('subjects-grid');
                 g.innerHTML = '';
+                if(d.subjects.length === 0) g.innerHTML = "<p>No hay asignaturas disponibles en esta demo.</p>";
                 d.subjects.forEach(s => {
                     g.innerHTML += `<div class="card"><h3>${s.code}</h3><p>${s.name}</p><button class="btn" onclick="app.loadSubject('${s.name}')">Acceder</button></div>`;
                 });
                 this.show('view-subjects');
             },
-
             loadSubject(fullName) {
                 this.history.push("Asignatura");
-                const especialSubject = '43GEIN_04_A_2026-27_Dificultades en el aprendizaje, trastornos de la comunicación y TDA / hiperactividad';
-                if (fullName === especialSubject) {
+                if (fullName.includes('43GEIN')) {
                     document.getElementById('unit-subject-title').innerText = fullName;
                     const g = document.getElementById('units-grid');
-                    g.innerHTML = '';
-                    g.innerHTML += `<div class="card"><h3>Unidad Competencial 2</h3><button class="btn" onclick="alert('Próximamente')">Entrar</button></div>`;
-                    g.innerHTML += `<div class="card"><h3>Unidad Competencial 3</h3><p>Acceso a Actividades y Simulaciones.</p><button class="btn" onclick="app.loadUC3Menu()">Entrar</button></div>`;
-                    g.innerHTML += `<div class="card"><h3>Unidad Competencial 4</h3><button class="btn" onclick="alert('Próximamente')">Entrar</button></div>`;
+                    g.innerHTML = `<div class="card"><h3>Unidad Competencial 3</h3><p>Trastornos del Lenguaje.</p><button class="btn" onclick="app.loadUC3Menu()">Entrar</button></div>`;
                     this.show('view-units');
                 } else {
-                    document.getElementById('subject-title').innerText = fullName;
-                    this.show('view-levels');
+                    alert("Solo disponible 43 GEIN UC3");
                 }
             },
-
-            loadUC3Menu() {
-                this.history.push("UC3");
-                this.show('view-uc3-menu');
-            },
-
-            loadUC3ActivityMenu() {
-                this.history.push("Actividad");
-                this.show('view-uc3-cases-menu');
-            },
-
+            loadUC3Menu() { this.history.push("UC3"); this.show('view-uc3-menu'); },
+            loadUC3ActivityMenu() { this.history.push("Casos"); this.show('view-uc3-cases-menu'); },
             loadCase(caseKey) {
                 const names = { marina: "Caso de Marina", anais: "Caso de Anaís", raul: "Caso de Raúl", angel: "Caso de Ángel", luis: "Caso de Luís" };
                 this.history.push(names[caseKey]);
@@ -771,12 +278,12 @@
                             <div class="task-title">${task.title}</div>
                             <p class="task-desc">${task.desc}</p>
                             <div class="chat-box">
-                                <div class="chat-header"><span>💬 Tutor Virtual AulIA</span></div>
+                                <div class="chat-header"><span>💬 Tutor Virtual AulIA (UC3)</span></div>
                                 <div class="chat-messages" id="${chatId}">
-                                    <div class="message msg-ai">Hola. Soy AulIA, tu tutor virtual. He analizado el caso. ¿Cuál es tu hipótesis inicial para esta tarea? Recuerda justificar con la teoría.</div>
+                                    <div class="message msg-ai">Hola. Soy tu tutor de UC3. He leído el caso. ¿Cuál es tu propuesta inicial basándote en el material de estudio?</div>
                                 </div>
                                 <div class="chat-input-area">
-                                    <input type="text" class="chat-input" id="input-${chatId}" placeholder="Escribe tu análisis aquí..." onkeypress="if(event.key==='Enter') app.sendMessage('${caseKey}', ${task.id})">
+                                    <input type="text" class="chat-input" id="input-${chatId}" placeholder="Escribe aquí..." onkeypress="if(event.key==='Enter') app.sendMessage('${caseKey}', ${task.id})">
                                     <button class="chat-btn" onclick="app.sendMessage('${caseKey}', ${task.id})">Enviar</button>
                                 </div>
                             </div>
@@ -785,7 +292,6 @@
                 });
                 this.show('view-uc3-case-detail');
             },
-
             sendMessage(caseKey, taskId) {
                 const chatId = `chat-${caseKey}-${taskId}`;
                 const input = document.getElementById(`input-${chatId}`);
@@ -798,51 +304,26 @@
                 msgContainer.scrollTop = msgContainer.scrollHeight;
 
                 const loadingId = `loading-${Date.now()}`;
-                msgContainer.innerHTML += `<div id="${loadingId}" class="message msg-ai" style="opacity:0.7">Analizando respuesta...</div>`;
+                msgContainer.innerHTML += `<div id="${loadingId}" class="message msg-ai" style="opacity:0.7">Consultando material UC3...</div>`;
                 msgContainer.scrollTop = msgContainer.scrollHeight;
 
-                // MEMORIA por chat (caso + tarea)
                 const state = tutorMemory.get(caseKey, taskId);
                 tutorMemory.pushTurn(state, "user", text);
 
                 setTimeout(() => {
                     document.getElementById(loadingId).remove();
-                    // Usar el cerebro entrenado (ahora con taskId + memoria para evitar repetición)
-                    let response = "Interesante planteamiento. ¿Podrías detallar más en qué te basas?";
-                    if(aiBrain[caseKey] && aiBrain[caseKey].evaluate) {
-                        response = aiBrain[caseKey].evaluate(text, taskId, state);
-                    }
-
+                    // LLAMADA AL NUEVO MOTOR DE IA
+                    const response = generateResponse(caseKey, taskId, text, state);
+                    
                     tutorMemory.pushTurn(state, "ai", response);
-
                     msgContainer.innerHTML += `<div class="message msg-ai">${response}</div>`;
                     msgContainer.scrollTop = msgContainer.scrollHeight;
-                }, 700);
+                }, 800);
             },
-
-            loadUC3PracticeLevels() { this.history.push("Práctica"); this.show('view-uc3-levels'); },
-
-            loadUC3SimGrid(level) {
-                this.history.push("Nivel " + level);
-                document.getElementById('uc3-sim-title').innerText = "UC3 - Práctica - Nivel " + level;
-                const g = document.getElementById('uc3-sim-grid');
-                g.innerHTML = '';
-                for(let i=1; i<=20; i++) g.innerHTML += `<div class="card-sim"><strong>Simulación ${i}</strong></div>`;
-                g.innerHTML += `<div class="card-sim card-ia" onclick="alert('Generando nueva simulación con IA...')"><strong>+ Acceso a más simulaciones generadas por IA</strong></div>`;
-                this.show('view-uc3-sims');
-            },
-
-            loadSimulations(n) {
-                this.history.push("Nivel " + n);
-                document.getElementById('level-title').innerText = "Simulaciones - Nivel " + n;
-                const g = document.getElementById('simulations-grid');
-                g.innerHTML = '';
-                for(let i=1; i<=20; i++) g.innerHTML += `<div class="card-sim"><strong>Simulación ${i}</strong></div>`;
-                this.show('view-simulations');
-            }
+            loadUC3PracticeLevels() { alert("Acceso restringido a actividad de evaluación."); },
+            loadUC3SimGrid(l) { },
+            loadSimulations(n) { }
         };
 
         app.renderDegrees();
     </script>
-</body>
-</html>
